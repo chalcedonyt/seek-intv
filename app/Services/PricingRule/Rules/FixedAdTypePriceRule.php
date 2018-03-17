@@ -4,9 +4,18 @@ namespace App\Services\PricingRule\Rules;
 use Validator;
 use App\Models\CheckoutItem;
 use App\Services\PricingRule\PricingRuleInterface;
+use App\Services\PricingRule\Rules\Abstracts\AdTypePricingRuleAbstract;
 
 class FixedAdTypePriceRule extends AdTypePricingRuleAbstract implements PricingRuleInterface
 {
+    /**
+     * @var string
+     */
+    protected $alias = 'fixed_for_ad_type';
+    /**
+     * @var string
+     */
+    protected $displayName = 'Fixed price for specific ad type';
     /**
      * @var float
      */
@@ -30,6 +39,14 @@ class FixedAdTypePriceRule extends AdTypePricingRuleAbstract implements PricingR
             }
             return $checkoutItem;
         })->all();
+    }
+
+    public function toArray(): array
+    {
+        $parent = parent::toArray();
+        return array_merge($parent, [
+            'fixedPrice' => $this->fixedPrice
+        ]);
     }
 
     public function getValidator(array $data): Validator

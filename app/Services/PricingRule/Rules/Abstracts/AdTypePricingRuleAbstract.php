@@ -1,10 +1,10 @@
 <?php
-namespace App\Services\PricingRule\Rules;
+namespace App\Services\PricingRule\Rules\Abstracts;
 
 use App\Models\AdType;
 use App\Models\CheckoutItem;
 
-abstract class AdTypePricingRuleAbstract
+abstract class AdTypePricingRuleAbstract extends PricingRuleAbstract
 {
     /**
      * @var AdType
@@ -18,6 +18,13 @@ abstract class AdTypePricingRuleAbstract
     public function setAdType(AdType $adType)
     {
         $this->adType = $adType;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'ad_type_id' => $this->adType->getKey()
+        ];
     }
 
     /**
@@ -42,4 +49,5 @@ abstract class AdTypePricingRuleAbstract
             return $item->adType->getKey() == $this->adType->getKey();
         })->all();
     }
+
 }

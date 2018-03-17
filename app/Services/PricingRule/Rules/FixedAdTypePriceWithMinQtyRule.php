@@ -8,6 +8,14 @@ use App\Services\PricingRule\PricingRuleInterface;
 class FixedAdTypePriceWithMinQtyRule extends FixedAdTypePriceRule implements PricingRuleInterface
 {
     /**
+     * @var string
+     */
+    protected $alias = 'fixed_for_ad_type_with_min_qty';
+    /**
+     * @var string
+     */
+    protected $displayName = 'Fixed price for specific ad type if minimum qty reached';
+    /**
      * @var int
      */
     protected $minQty;
@@ -28,6 +36,14 @@ class FixedAdTypePriceWithMinQtyRule extends FixedAdTypePriceRule implements Pri
             }
             return $checkoutItem;
         })->all();
+    }
+
+    public function toArray(): array
+    {
+        $parent = parent::toArray();
+        return array_merge($parent, [
+            'minQty' => $this->minQty
+        ]);
     }
 
     /**

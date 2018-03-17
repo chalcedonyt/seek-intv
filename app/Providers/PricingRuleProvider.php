@@ -4,6 +4,10 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
+use App\Services\PricingRule\Rules\FreeXForEveryYRule;
+use App\Services\PricingRule\Rules\FixedAdTypePriceRule;
+use App\Services\PricingRule\Rules\FixedAdTypePriceWithMinQtyRule;
+
 class PricingRuleProvider extends ServiceProvider
 {
     /**
@@ -15,9 +19,9 @@ class PricingRuleProvider extends ServiceProvider
     {
         $this->app->singleton('PricingRules', function($app) {
             return [
-                'free_x_for_y' => \App\Services\PricingRule\FreeXForEveryYRule::class,
-                'fixed_for_ad_type' => \App\Services\PricingRule\FixedAdTypePriceRule::class,
-                'fixed_for_ad_type_with_min_qty' => \App\Services\PricingRule\FixedAdTypePriceWithMinQtyRule::class
+                (new FreeXForEveryYRule)->getAlias() => FreeXForEveryYRule::class,
+                (new FixedAdTypePriceRule)->getAlias() => FixedAdTypePriceRule::class,
+                (new FixedAdTypePriceWithMinQtyRule)->getAlias() => FixedAdTypePriceWithMinQtyRule::class
             ];
          });
     }

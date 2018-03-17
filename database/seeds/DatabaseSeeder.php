@@ -12,5 +12,7 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call(AdTypesSeeder::class);
+        $this->call(PricingRuleSeeder::class);
+        $this->call(CustomerPricingRuleSeeder::class);
     }
 }

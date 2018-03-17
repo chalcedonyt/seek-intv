@@ -3,9 +3,18 @@ namespace App\Services\PricingRule\Rules;
 
 use Validator;
 use App\Services\PricingRule\PricingRuleInterface;
+use App\Services\PricingRule\Rules\Abstracts\AdTypePricingRuleAbstract;
 
 class FreeXForEveryYRule extends AdTypePricingRuleAbstract implements PricingRuleInterface
 {
+    /**
+     * @var string
+     */
+    protected $alias = 'free_x_every_y';
+    /**
+     * @var string
+     */
+    protected $displayName = 'Buy X free Y';
     /**
      * The number of free items given for every y items checked out
      *
@@ -35,6 +44,15 @@ class FreeXForEveryYRule extends AdTypePricingRuleAbstract implements PricingRul
     public function setY(int $y)
     {
         $this->y = $y;
+    }
+
+    public function toArray(): array
+    {
+        $parent = parent::toArray();
+        return array_merge($parent, [
+            'x' => $this->x,
+            'y' => $this->y
+        ]);
     }
 
     public function apply(array $checkoutItems): array
