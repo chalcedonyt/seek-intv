@@ -27,10 +27,10 @@ class CustomerPricingRuleSeeder extends Seeder
         $unilever = Customer::create([
             'name' => 'Unilever'
         ]);
-        $rule = new $pricingRules['free_x_every_y'];
+        $rule = new $pricingRules['buy_x_free_y'];
         $rule->setAdType(AdType::find(AdType::TYPE_CLASSIC));
-        $rule->setX(1);
-        $rule->setX(2);
+        $rule->setBonusQty(1);
+        $rule->setThresholdQty(2);
 
         CustomerPricingRule::create([
             'customer_id' => $unilever->getKey(),
@@ -80,10 +80,10 @@ class CustomerPricingRuleSeeder extends Seeder
             'name' => 'Ford'
         ]);
 
-        $classicRule = new $pricingRules['free_x_every_y'];
+        $classicRule = new $pricingRules['buy_x_free_y'];
         $classicRule->setAdType(AdType::find(AdType::TYPE_CLASSIC));
-        $classicRule->setX(1);
-        $classicRule->setY(4);
+        $classicRule->setBonusQty(1);
+        $classicRule->setThresholdQty(4);
         CustomerPricingRule::create([
             'customer_id' => $ford->getKey(),
             'pricing_rule_id' => PricingRule::whereProviderAlias($classicRule->getAlias())->first()->getKey(),
@@ -104,6 +104,7 @@ class CustomerPricingRuleSeeder extends Seeder
         $premiumRule = new $pricingRules['fixed_for_ad_type_with_min_qty'];
         $premiumRule->setAdType(AdType::find(AdType::TYPE_PREMIUM));
         $premiumRule->setFixedPrice(389.99);
+        $premiumRule->setMinQty(3);
         CustomerPricingRule::create([
             'customer_id' => $ford->getKey(),
             'pricing_rule_id' => PricingRule::whereProviderAlias($premiumRule->getAlias())->first()->getKey(),

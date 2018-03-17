@@ -5,12 +5,12 @@ use Validator;
 use App\Services\PricingRule\PricingRuleInterface;
 use App\Services\PricingRule\Rules\Abstracts\AdTypePricingRuleAbstract;
 
-class FreeXForEveryYRule extends AdTypePricingRuleAbstract implements PricingRuleInterface
+class BuyXFreeYRule extends AdTypePricingRuleAbstract implements PricingRuleInterface
 {
     /**
      * @var string
      */
-    protected $alias = 'free_x_every_y';
+    protected $alias = 'buy_x_free_y';
     /**
      * @var string
      */
@@ -20,44 +20,44 @@ class FreeXForEveryYRule extends AdTypePricingRuleAbstract implements PricingRul
      *
      * @var int
      */
-    protected $x;
+    protected $bonusQty;
     /**
-     * The number of items needed in a checkout
+     * The number of items needed in a checkout to trigger
      *
      * @var int
      */
-    protected $y;
+    protected $thresholdQty;
 
     /**
-     * @param integer $x
+     * @param integer $qty
      * @return void
      */
-    public function setX(int $x)
+    public function setBonusQty(int $qty)
     {
-        $this->x = $x;
+        $this->bonusQty = $qty;
     }
 
     /**
-     * @param integer $y
+     * @param integer $thresholdQty
      * @return void
      */
-    public function setY(int $y)
+    public function setThresholdQty(int $thresholdQty)
     {
-        $this->y = $y;
+        $this->thresholdQty = $thresholdQty;
     }
 
     public function toArray(): array
     {
         $parent = parent::toArray();
         return array_merge($parent, [
-            'x' => $this->x,
-            'y' => $this->y
+            'bonusQty' => $this->bonusQty,
+            'thresholdQty' => $this->thresholdQty
         ]);
     }
 
     public function apply(array $checkoutItems): array
     {
-        $freeItemCount = $this->numFreeItems($checkoutItems);
+        $freeItemCount = $this->totalBonusQty($checkoutItems);
 
         return collect($checkoutItems)->map(function (CheckoutItem $checkoutItem) use (&$freeItemCount): CheckoutItem {
             if ($this->checkoutItemIsOfAdType($checkoutItem, $this->adType->getKey()) && $freeItemCount > 0) {
@@ -70,17 +70,17 @@ class FreeXForEveryYRule extends AdTypePricingRuleAbstract implements PricingRul
     }
 
     /**
-     * Return the number of free items applicable.
-     * E.g. For a "Free 2 for every 3", return 4 if the input is 7.
+     * Return the number of bonus items applicable.
+     * E.g. For a "Buy 3 free 2", return 4 if the input is 7.
      *
      * @param array $checkoutItems
      * @return integer
      */
-    public function numFreeItems(array $checkoutItems): int
+    public function totalBonusQty(array $checkoutItems): int
     {
         $eligibleItems = $this->itemsOfAdType($checkoutItems);
-        $freeItemCount = $this->x * floor(count($eligibleItems)/$this->y);
-        return $freeItemCount;
+        $totalBonusQty = $this->bonusQty * floor(count($eligibleItems)/$this->thresholdQty);
+        return $totalBonusQty;
     }
 
     protected function shouldApplyRule(array $checkoutItems): bool
@@ -91,14 +91,14 @@ class FreeXForEveryYRule extends AdTypePricingRuleAbstract implements PricingRul
     public function getValidator(array $data): Validator
     {
         //Free 1 for every 3 would be valid, while free 4 for every 3 would not be allowed
-        $max_x = isset($data['y']) && $data['y'] > 1
-        ? intval($data['y'])-1
+        $maxBonusQty = isset($data['threshold_qty']) && $data['threshold_qty'] > 1
+        ? intval($data['threshold_qty'])-1
         : 1;
 
         return Validator::make($data, [
             'ad_type_id' => 'required|exists:ad_type,id',
-            'x' => 'required|integer|min:1|max:'.$max_x,
-            'y' => 'required|integer|min:1'
+            'bonus_qty' => 'required|integer|min:1|max:'.$maxBonusQty,
+            'threshold_qty' => 'required|integer|min:1'
         ]);
     }
 }
