@@ -23,7 +23,7 @@ abstract class AdTypePricingRuleAbstract extends PricingRuleAbstract
     public function toArray(): array
     {
         return [
-            'ad_type_id' => $this->adType->getKey()
+            'adTypeId' => $this->adType->getKey()
         ];
     }
 

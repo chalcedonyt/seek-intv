@@ -46,6 +46,10 @@ class BuyXFreeYRule extends AdTypePricingRuleAbstract implements PricingRuleInte
         $this->thresholdQty = $thresholdQty;
     }
 
+    /**
+     *
+     * @return array
+     */
     public function toArray(): array
     {
         $parent = parent::toArray();
@@ -55,6 +59,29 @@ class BuyXFreeYRule extends AdTypePricingRuleAbstract implements PricingRuleInte
         ]);
     }
 
+    /**
+     *
+     * @param array $data
+     * @return Validator
+     */
+    public function getValidator(array $data): Validator
+    {
+        //Free 1 for every 3 would be valid, while free 4 for every 3 would not be allowed
+        $maxBonusQty = isset($data['thresholdQty']) && $data['thresholdQty'] > 1
+        ? intval($data['thresholdQty'])-1
+        : 1;
+
+        return Validator::make($data, [
+            'adTypeId' => 'required|exists:ad_type,id',
+            'bonusQty' => 'required|integer|min:1|max:'.$maxBonusQty,
+            'thresholdQty' => 'required|integer|min:1'
+        ]);
+    }
+
+    /**
+     * @param array<CheckoutItem> $checkoutItems
+     * @return array<CheckoutItem>
+     */
     public function apply(array $checkoutItems): array
     {
         $freeItemCount = $this->totalBonusQty($checkoutItems);
@@ -81,24 +108,5 @@ class BuyXFreeYRule extends AdTypePricingRuleAbstract implements PricingRuleInte
         $eligibleItems = $this->itemsOfAdType($checkoutItems);
         $totalBonusQty = $this->bonusQty * floor(count($eligibleItems)/$this->thresholdQty);
         return $totalBonusQty;
-    }
-
-    protected function shouldApplyRule(array $checkoutItems): bool
-    {
-        return true;
-    }
-
-    public function getValidator(array $data): Validator
-    {
-        //Free 1 for every 3 would be valid, while free 4 for every 3 would not be allowed
-        $maxBonusQty = isset($data['threshold_qty']) && $data['threshold_qty'] > 1
-        ? intval($data['threshold_qty'])-1
-        : 1;
-
-        return Validator::make($data, [
-            'ad_type_id' => 'required|exists:ad_type,id',
-            'bonus_qty' => 'required|integer|min:1|max:'.$maxBonusQty,
-            'threshold_qty' => 'required|integer|min:1'
-        ]);
     }
 }

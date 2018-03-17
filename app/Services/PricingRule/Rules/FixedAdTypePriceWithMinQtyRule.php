@@ -20,11 +20,20 @@ class FixedAdTypePriceWithMinQtyRule extends FixedAdTypePriceRule implements Pri
      */
     protected $minQty;
 
+    /**
+     *
+     * @param integer $qty
+     * @return void
+     */
     public function setMinQty(int $qty)
     {
         $this->minQty = $qty;
     }
 
+    /**
+     * @param array<CheckoutItem> $checkoutItems
+     * @return array<CheckoutItem>
+     */
     public function apply(array $checkoutItems): array
     {
         return collect($checkoutItems)->map(function (CheckoutItem $checkoutItem) use ($checkoutItems): CheckoutItem {
@@ -38,6 +47,10 @@ class FixedAdTypePriceWithMinQtyRule extends FixedAdTypePriceRule implements Pri
         })->all();
     }
 
+    /**
+     *
+     * @return array
+     */
     public function toArray(): array
     {
         $parent = parent::toArray();
@@ -47,7 +60,21 @@ class FixedAdTypePriceWithMinQtyRule extends FixedAdTypePriceRule implements Pri
     }
 
     /**
-     * @param array $checkoutItems
+     *
+     * @param array $data
+     * @return Validator
+     */
+    public function getValidator(array $data): Validator
+    {
+        return Validator::make($data, [
+            'adTypeId' => 'required|exists:ad_type,id',
+            'fixedPrice' => 'required|integer',
+            'minQty' => 'required|integer|min:1'
+        ]);
+    }
+
+    /**
+     * @param array<CheckoutItem> $checkoutItems
      * @return boolean
      */
     public function hasMinQty(array $checkoutItems): bool
@@ -56,14 +83,5 @@ class FixedAdTypePriceWithMinQtyRule extends FixedAdTypePriceRule implements Pri
             return $this->checkoutItemIsOfAdType($checkoutItem, $this->adType->getKey());
         })->count();
         return $numOfEligibleAdTypes >= $this->minQty;
-    }
-
-    public function getValidator(array $data): Validator
-    {
-        return Validator::make($data, [
-            'ad_type_id' => 'required|exists:ad_type,id',
-            'price' => 'required|integer',
-            'min_qty' => 'required|integer|min:1'
-        ]);
     }
 }

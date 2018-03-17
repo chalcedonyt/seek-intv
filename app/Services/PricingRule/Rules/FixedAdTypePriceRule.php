@@ -30,6 +30,10 @@ class FixedAdTypePriceRule extends AdTypePricingRuleAbstract implements PricingR
         $this->fixedPrice = $price;
     }
 
+    /**
+     * @param array<CheckoutItem> $checkoutItems
+     * @return array<CheckoutItem>
+     */
     public function apply(array $checkoutItems): array
     {
         return collect($checkoutItems)->map(function (CheckoutItem $checkoutItem): CheckoutItem {
@@ -41,6 +45,10 @@ class FixedAdTypePriceRule extends AdTypePricingRuleAbstract implements PricingR
         })->all();
     }
 
+    /**
+     *
+     * @return array
+     */
     public function toArray(): array
     {
         $parent = parent::toArray();
@@ -49,11 +57,16 @@ class FixedAdTypePriceRule extends AdTypePricingRuleAbstract implements PricingR
         ]);
     }
 
+    /**
+     *
+     * @param array $data
+     * @return Validator
+     */
     public function getValidator(array $data): Validator
     {
         return Validator::make($data, [
-            'ad_type_id' => 'required|exists:ad_type,id',
-            'price' => 'required|integer'
+            'adTypeId' => 'required|exists:ad_type,id',
+            'fixedPrice' => 'required|integer'
         ]);
     }
 }
