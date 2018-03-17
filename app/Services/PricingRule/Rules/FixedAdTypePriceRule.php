@@ -24,8 +24,8 @@ class FixedAdTypePriceRule extends AdTypePricingRuleAbstract implements PricingR
     {
         return collect($checkoutItems)->map(function (CheckoutItem $checkoutItem): CheckoutItem {
             if ($this->checkoutItemIsOfAdType($checkoutItem, $this->adType->getKey())) {
-                $checkoutItem->appliedPrice = $this->fixedPrice;
-                $checkoutItem->rulesApplied[] = $this->toArray();
+                $checkoutItem->applied_price = $this->fixedPrice;
+                // $checkoutItem->applied_rules[] = $this->toArray();
             }
             return $checkoutItem;
         })->all();

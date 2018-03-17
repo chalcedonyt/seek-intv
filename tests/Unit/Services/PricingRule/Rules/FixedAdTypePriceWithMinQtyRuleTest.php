@@ -3,19 +3,20 @@
 namespace Tests\Unit\Services\PricingRule\Rules;
 
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 use App\Models\AdType;
 use App\Models\CheckoutItem;
 use App\Services\PricingRule\Rules\FixedAdTypePriceWithMinQtyRule;
+use App\Gateways\CheckoutItemCollection;
+
+use App\TransferObjects\ResolvedPrice;
 
 use Tests\Unit\Services\PricingRule\Rules\TestTraits\GeneratesCheckoutItemsOfAdType;
 
 class FixedAdTypePriceWithMinQtyRuleTest extends TestCase
 {
-    use GeneratesCheckoutItemsOfAdType;
-
+    use GeneratesCheckoutItemsOfAdType, DatabaseTransactions;
     /**
      * A basic test example.
      *
@@ -32,18 +33,54 @@ class FixedAdTypePriceWithMinQtyRuleTest extends TestCase
         $rule->setMinQty($minQty);
         $rule->setAdType($adType);
 
-        $checkoutItems = $this->generateCheckoutItems($adType, $minQty, $qtyOfDiffTypes = rand(6, 10));
-        $this->assertTrue($rule->hasMinQty($checkoutItems->all()));
+        $checkoutItems = $this->generateCheckoutItems($adType, $minQty, $qtyOfDiffTypes = rand(6, 10))->all();
+        $this->assertTrue($rule->hasMinQty($checkoutItems));
 
-        $checkoutItems = $this->generateCheckoutItems($adType, $minQty+rand(1, 10), $qtyOfDiffTypes = rand(6, 10));
-        $this->assertTrue($rule->hasMinQty($checkoutItems->all()));
+        $checkoutItems = $this->generateCheckoutItems($adType, $minQty+rand(1, 10), $qtyOfDiffTypes = rand(6, 10))->all();
+        $this->assertTrue($rule->hasMinQty($checkoutItems));
 
-        $checkoutItems = $this->generateCheckoutItems($adType, $minQty-rand(1, 10), $qtyOfDiffTypes = rand(6, 10));
-        $this->assertFalse($rule->hasMinQty($checkoutItems->all()));
+        $checkoutItems = $this->generateCheckoutItems($adType, $minQty-rand(1, 10), $qtyOfDiffTypes = rand(6, 10))->all();
+        $this->assertFalse($rule->hasMinQty($checkoutItems));
     }
 
-    public function test_it_returns_correct_price()
+    public function test_it_returns_correct_price_if_below_min_qty()
     {
+        //ignores rule because below qty
+        $adType = AdType::inRandomOrder()->first();
+        $fixedPrice = rand(1000, 2000);
+        $minQty = rand(6, 10);
+        $qty = $minQty-1;
 
+        $resolvedPrice = $this->resolveWithItemQty($adType, $fixedPrice, $minQty, $qty);
+        $this->assertEquals(round($adType->price*$qty, 2), $resolvedPrice->price);
+    }
+
+    public function test_it_returns_correct_price_if_gte_min_qty()
+    {
+        //ignores rule because below qty
+        $adType = AdType::inRandomOrder()->first();
+        $fixedPrice = rand(1000, 2000);
+        $minQty = rand(6, 10);
+        $qty = $minQty+rand(0, 10);
+
+        $resolvedPrice = $this->resolveWithItemQty($adType, $fixedPrice, $minQty, $qty);
+        $this->assertEquals(round($fixedPrice*$qty, 2), $resolvedPrice->price);
+    }
+
+    protected function resolveWithItemQty(AdType $adType, float $fixedPrice, int $minQty, int $qty): ResolvedPrice
+    {
+        $rule = new FixedAdTypePriceWithMinQtyRule;
+        $rule->setFixedPrice($fixedPrice);
+        $rule->setMinQty($minQty);
+        $rule->setAdType($adType);
+
+        $itemQty = $qty;
+        $checkoutItems = $this->generateCheckoutItems($adType, $itemQty)->all();
+
+        $items = (new CheckoutItemCollection)
+        ->setItems($checkoutItems)
+        ->addRule($rule);
+
+        return $items->resolve();
     }
 }

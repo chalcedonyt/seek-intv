@@ -3,8 +3,7 @@
 namespace Tests\Unit\Services\PricingRule\Rules;
 
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 use App\Services\PricingRule\Rules\FreeXForEveryYRule;
 use App\Models\AdType;
@@ -14,7 +13,8 @@ use Tests\Unit\Services\PricingRule\Rules\TestTraits\GeneratesCheckoutItemsOfAdT
 
 class FreeXForEveryYRuleTest extends TestCase
 {
-    use GeneratesCheckoutItemsOfAdType;
+    use GeneratesCheckoutItemsOfAdType, DatabaseTransactions;
+
     /**
      * A basic test example.
      *

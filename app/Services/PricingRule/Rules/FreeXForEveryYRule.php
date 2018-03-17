@@ -43,8 +43,8 @@ class FreeXForEveryYRule extends AdTypePricingRuleAbstract implements PricingRul
 
         return collect($checkoutItems)->map(function (CheckoutItem $checkoutItem) use (&$freeItemCount): CheckoutItem {
             if ($this->checkoutItemIsOfAdType($checkoutItem, $this->adType->getKey()) && $freeItemCount > 0) {
-                $checkoutItem->appliedPrice = 0;
-                $checkoutItem->rulesApplied[] = $this->toArray();
+                $checkoutItem->applied_price = 0;
+                // $checkoutItem->rulesApplied[] = $this->toArray();
                 $freeItemCount--;
             }
             return $checkoutItem;
