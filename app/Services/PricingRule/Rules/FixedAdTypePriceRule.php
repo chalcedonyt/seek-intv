@@ -2,6 +2,7 @@
 namespace App\Services\PricingRule\Rules;
 
 use Validator;
+use App\Models\CheckoutItem;
 use App\Services\PricingRule\PricingRuleInterface;
 
 class FixedAdTypePriceRule extends AdTypePricingRuleAbstract implements PricingRuleInterface

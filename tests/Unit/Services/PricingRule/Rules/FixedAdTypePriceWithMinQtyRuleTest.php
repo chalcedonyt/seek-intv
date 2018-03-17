@@ -7,10 +7,9 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 use App\Models\AdType;
 use App\Models\CheckoutItem;
-use App\Services\PricingRule\Rules\FixedAdTypePriceWithMinQtyRule;
-use App\Gateways\CheckoutItemCollection;
-
 use App\TransferObjects\ResolvedPrice;
+use App\Gateways\CheckoutItemCollection;
+use App\Services\PricingRule\Rules\FixedAdTypePriceWithMinQtyRule;
 
 use Tests\Unit\Services\PricingRule\Rules\TestTraits\GeneratesCheckoutItemsOfAdType;
 
@@ -45,7 +44,6 @@ class FixedAdTypePriceWithMinQtyRuleTest extends TestCase
 
     public function test_it_returns_correct_price_if_below_min_qty()
     {
-        //ignores rule because below qty
         $adType = AdType::inRandomOrder()->first();
         $fixedPrice = rand(1000, 2000);
         $minQty = rand(6, 10);
@@ -57,7 +55,6 @@ class FixedAdTypePriceWithMinQtyRuleTest extends TestCase
 
     public function test_it_returns_correct_price_if_gte_min_qty()
     {
-        //ignores rule because below qty
         $adType = AdType::inRandomOrder()->first();
         $fixedPrice = rand(1000, 2000);
         $minQty = rand(6, 10);
@@ -67,6 +64,13 @@ class FixedAdTypePriceWithMinQtyRuleTest extends TestCase
         $this->assertEquals(round($fixedPrice*$qty, 2), $resolvedPrice->price);
     }
 
+    /**
+     * @param AdType $adType
+     * @param float $fixedPrice
+     * @param integer $minQty The minimum qty the rule should trigger at
+     * @param integer $qty The number of checkout items generated
+     * @return ResolvedPrice
+     */
     protected function resolveWithItemQty(AdType $adType, float $fixedPrice, int $minQty, int $qty): ResolvedPrice
     {
         $rule = new FixedAdTypePriceWithMinQtyRule;
@@ -74,8 +78,7 @@ class FixedAdTypePriceWithMinQtyRuleTest extends TestCase
         $rule->setMinQty($minQty);
         $rule->setAdType($adType);
 
-        $itemQty = $qty;
-        $checkoutItems = $this->generateCheckoutItems($adType, $itemQty)->all();
+        $checkoutItems = $this->generateCheckoutItems($adType, $qty)->all();
 
         $items = (new CheckoutItemCollection)
         ->setItems($checkoutItems)
