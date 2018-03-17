@@ -25,12 +25,12 @@ class FixedAdTypePriceWithMinQtyRuleTest extends TestCase
     {
         $adType = AdType::inRandomOrder()->first();
         $price = rand(1, 100);
-        $minQty = 3;
+        $minQty = rand(5, 10);
 
         $rule = new FixedAdTypePriceWithMinQtyRule;
         $rule->setFixedPrice($price);
         $rule->setMinQty($minQty);
-        $rule->setAdTypeId($adType->getKey());
+        $rule->setAdType($adType);
 
         $checkoutItems = $this->generateCheckoutItems($adType, $minQty, $qtyOfDiffTypes = rand(6, 10));
         $this->assertTrue($rule->hasMinQty($checkoutItems->all()));

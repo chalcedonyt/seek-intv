@@ -27,7 +27,7 @@ class FreeXForEveryYRuleTest extends TestCase
         $rule = new FreeXForEveryYRule;
         $rule->setX(1);
         $rule->setY(4);
-        $rule->setAdTypeId($adType->getKey());
+        $rule->setAdType($adType);
 
         //8 eligible items in checkout, should return 2
         $checkoutItems = $this->generateCheckoutItems($adType, 8, $qtyOfDiffTypes = rand(6, 10));

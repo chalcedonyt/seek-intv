@@ -20,7 +20,7 @@ class FixedAdTypePriceWithMinQtyRule extends FixedAdTypePriceRule implements Pri
     public function apply(array $checkoutItems): array
     {
         return collect($checkoutItems)->map(function (CheckoutItem $checkoutItem): CheckoutItem {
-            if ($this->checkoutItemIsOfAdType($checkoutItem, $this->adTypeId)) {
+            if ($this->checkoutItemIsOfAdType($checkoutItem, $this->adType->getKey())) {
                 if ($this->hasMinQty()) {
                     $checkoutItem->appliedPrice = $this->fixedPrice;
                     $checkoutItem->rulesApplied[] = $this->toArray();
@@ -37,7 +37,7 @@ class FixedAdTypePriceWithMinQtyRule extends FixedAdTypePriceRule implements Pri
     public function hasMinQty(array $checkoutItems): bool
     {
         $numOfEligibleAdTypes = collect($checkoutItems)->filter(function (CheckoutItem $checkoutItem) {
-            return $this->checkoutItemIsOfAdType($checkoutItem, $this->adTypeId);
+            return $this->checkoutItemIsOfAdType($checkoutItem, $this->adType->getKey());
         })->count();
         return $numOfEligibleAdTypes >= $this->minQty;
     }
