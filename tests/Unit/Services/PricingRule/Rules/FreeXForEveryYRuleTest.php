@@ -10,8 +10,11 @@ use App\Services\PricingRule\Rules\FreeXForEveryYRule;
 use App\Models\AdType;
 use App\Models\CheckoutItem;
 
+use Tests\Unit\Services\PricingRule\Rules\TestTraits\GeneratesCheckoutItemsOfAdType;
+
 class FreeXForEveryYRuleTest extends TestCase
 {
+    use GeneratesCheckoutItemsOfAdType;
     /**
      * A basic test example.
      *
@@ -27,39 +30,15 @@ class FreeXForEveryYRuleTest extends TestCase
         $rule->setAdTypeId($adType->getKey());
 
         //8 eligible items in checkout, should return 2
-        $checkoutItems = $this->generateCheckoutItems($adType, 8, 10);
+        $checkoutItems = $this->generateCheckoutItems($adType, 8, $qtyOfDiffTypes = rand(6, 10));
         $this->assertEquals(2, $rule->numFreeItems($checkoutItems->all()));
 
         //9 eligible items in checkout, should return 2
-        $checkoutItems = $this->generateCheckoutItems($adType, 9, 10);
+        $checkoutItems = $this->generateCheckoutItems($adType, 9, $qtyOfDiffTypes = rand(6, 10));
         $this->assertEquals(2, $rule->numFreeItems($checkoutItems->all()));
 
         //3 eligible items in checkout, should return 0
-        $checkoutItems = $this->generateCheckoutItems($adType, 9, 10);
-        $this->assertEquals(2, $rule->numFreeItems($checkoutItems->all()));
-    }
-
-    /**
-     * @param AdType $adType
-     * @param int $adTypeNum Number of items to generate for this ad type
-     * @param int $diffAdTypeNum Number of items to generate for different ad type
-     * @return Collection
-     */
-    protected function generateCheckoutItems(AdType $adType, int $adTypeNum, int $diffAdTypeNum): \Illuminate\Database\Eloquent\Collection
-    {
-        $eligibleItems = factory(CheckoutItem::class, $adTypeNum)
-        ->make()
-        ->each(function (CheckoutItem $item) use ($adType) {
-            $item->adType = $adType;
-        });
-
-        $otherAdTypes = AdType::where('id', '<>', $adType->getKey())->get();
-        $ineligibleItems = factory(CheckoutItem::class, $diffAdTypeNum)
-        ->make()
-        ->each(function (CheckoutItem $item) use ($otherAdTypes) {
-           $item->adType = $otherAdTypes->random();
-        });
-
-        return $eligibleItems->concat($ineligibleItems);
+        $checkoutItems = $this->generateCheckoutItems($adType, 3, $qtyOfDiffTypes = rand(6, 10));
+        $this->assertEquals(0, $rule->numFreeItems($checkoutItems->all()));
     }
 }

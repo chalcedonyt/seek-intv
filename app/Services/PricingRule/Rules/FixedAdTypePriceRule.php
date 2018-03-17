@@ -6,28 +6,29 @@ use App\Services\PricingRule\PricingRuleInterface;
 
 class FixedAdTypePriceRule extends AdTypePricingRuleAbstract implements PricingRuleInterface
 {
+    /**
+     * @var float
+     */
     protected $fixedPrice;
 
-    public function __construct()
+    /**
+     * @param float $price
+     * @return void
+     */
+    public function setFixedPrice(float $price)
     {
+        $this->fixedPrice = $price;
     }
 
     public function apply(array $checkoutItems): array
     {
         return collect($checkoutItems)->map(function (CheckoutItem $checkoutItem): CheckoutItem {
             if ($this->checkoutItemIsOfAdType($checkoutItem, $this->adTypeId)) {
-                if ($this->shouldApplyRule()) {
-                    $checkoutItem->appliedPrice = $this->fixedPrice;
-                    $checkoutItem->rulesApplied[] = $this->toArray();
-                }
+                $checkoutItem->appliedPrice = $this->fixedPrice;
+                $checkoutItem->rulesApplied[] = $this->toArray();
             }
             return $checkoutItem;
         })->all();
-    }
-
-    protected function shouldApplyRule(array $checkoutItems): bool
-    {
-        return true;
     }
 
     public function getValidator(array $data): Validator

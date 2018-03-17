@@ -5,20 +5,23 @@ use Validator;
 use App\Models\CheckoutItem;
 use App\Services\PricingRule\PricingRuleInterface;
 
-class FixedAdTypePriceRuleWithMinQty extends FixedAdTypeRule implements PricingRuleInterface
+class FixedAdTypePriceWithMinQtyRule extends FixedAdTypePriceRule implements PricingRuleInterface
 {
-    protected $fixedPrice;
+    /**
+     * @var int
+     */
     protected $minQty;
 
-    public function __construct()
+    public function setMinQty(int $qty)
     {
+        $this->minQty = $qty;
     }
 
     public function apply(array $checkoutItems): array
     {
         return collect($checkoutItems)->map(function (CheckoutItem $checkoutItem): CheckoutItem {
             if ($this->checkoutItemIsOfAdType($checkoutItem, $this->adTypeId)) {
-                if ($this->shouldApplyRule()) {
+                if ($this->hasMinQty()) {
                     $checkoutItem->appliedPrice = $this->fixedPrice;
                     $checkoutItem->rulesApplied[] = $this->toArray();
                 }
@@ -27,7 +30,11 @@ class FixedAdTypePriceRuleWithMinQty extends FixedAdTypeRule implements PricingR
         })->all();
     }
 
-    protected function shouldApplyRule(array $checkoutItems): bool
+    /**
+     * @param array $checkoutItems
+     * @return boolean
+     */
+    public function hasMinQty(array $checkoutItems): bool
     {
         $numOfEligibleAdTypes = collect($checkoutItems)->filter(function (CheckoutItem $checkoutItem) {
             return $this->checkoutItemIsOfAdType($checkoutItem, $this->adTypeId);
