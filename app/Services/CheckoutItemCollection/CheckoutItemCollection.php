@@ -1,7 +1,8 @@
 <?php
-namespace App\Gateways;
+namespace App\Services\CheckoutItemCollection;
 
 use App\Models\CheckoutItem;
+use App\Models\Customer;
 use App\TransferObjects\ResolvedPrice;
 use App\Services\PricingRule\PricingRuleInterface;
 
@@ -15,6 +16,13 @@ class CheckoutItemCollection
      * @var array<PricingRuleInterface>
      */
     protected $rules = [];
+
+    protected $customer;
+
+    public function setCustomer(Customer $c)
+    {
+        $this->customer = $c;
+    }
 
     /**
      * @param CheckoutItem $item

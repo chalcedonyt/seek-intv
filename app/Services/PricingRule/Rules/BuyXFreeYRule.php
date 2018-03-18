@@ -2,6 +2,8 @@
 namespace App\Services\PricingRule\Rules;
 
 use Validator;
+use App\Models\CheckoutItem;
+
 use App\Services\PricingRule\PricingRuleInterface;
 use App\Services\PricingRule\Rules\Abstracts\AdTypePricingRuleAbstract;
 

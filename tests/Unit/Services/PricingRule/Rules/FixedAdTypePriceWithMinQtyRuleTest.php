@@ -8,8 +8,8 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use App\Models\AdType;
 use App\Models\CheckoutItem;
 use App\TransferObjects\ResolvedPrice;
-use App\Gateways\CheckoutItemCollection;
 use App\Services\PricingRule\Rules\FixedAdTypePriceWithMinQtyRule;
+use App\Services\CheckoutItemCollection\CheckoutItemCollection;
 
 use Tests\Unit\Services\PricingRule\Rules\TestTraits\GeneratesCheckoutItemsOfAdType;
 
