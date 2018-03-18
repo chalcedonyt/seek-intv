@@ -1,6 +1,8 @@
 <?php
 namespace App\Services\PricingRule\Rules\Abstracts;
 
+use App\Services\PricingRule\PricingRuleInterface;
+
 abstract class PricingRuleAbstract
 {
     /**
@@ -24,5 +26,4 @@ abstract class PricingRuleAbstract
     {
         return $this->displayName;
     }
-
 }

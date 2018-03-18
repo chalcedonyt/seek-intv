@@ -20,6 +20,7 @@ class CustomerPricingRuleSeeder extends Seeder
         CustomerPricingRule::unguard();
 
         $pricingRules = app('PricingRules');
+        $pricingRuleFactories = app('PricingRuleFactories');
 
         // Unilever
         // Gets a 3 for 2 deals on Classic Ads
@@ -27,10 +28,11 @@ class CustomerPricingRuleSeeder extends Seeder
         $unilever = Customer::create([
             'name' => 'Unilever'
         ]);
-        $rule = new $pricingRules['buy_x_free_y'];
-        $rule->setAdType(AdType::find(AdType::TYPE_CLASSIC));
-        $rule->setBonusQty(1);
-        $rule->setThresholdQty(2);
+        $rule = $pricingRuleFactories['buy_x_free_y']::fromArray([
+            'adTypeId' => AdType::TYPE_CLASSIC,
+            'bonusQty' => 1,
+            'thresholdQty' => 2
+        ]);
 
         CustomerPricingRule::create([
             'customer_id' => $unilever->getKey(),
@@ -44,9 +46,10 @@ class CustomerPricingRuleSeeder extends Seeder
         $apple = Customer::create([
             'name' => 'Apple'
         ]);
-        $rule = new $pricingRules['fixed_for_ad_type'];
-        $rule->setAdType(AdType::find(AdType::TYPE_STANDOUT));
-        $rule->setFixedPrice(299.99);
+        $rule = $pricingRuleFactories['fixed_for_ad_type']::fromArray([
+            'adTypeId' => AdType::TYPE_STANDOUT,
+            'fixedPrice' => 299.99
+        ]);
 
         CustomerPricingRule::create([
             'customer_id' => $apple->getKey(),
@@ -60,10 +63,11 @@ class CustomerPricingRuleSeeder extends Seeder
         $nike = Customer::create([
             'name' => 'Nike'
         ]);
-        $rule = new $pricingRules['fixed_for_ad_type_with_min_qty'];
-        $rule->setAdType(AdType::find(AdType::TYPE_PREMIUM));
-        $rule->setFixedPrice(379.99);
-        $rule->setMinQty(4);
+        $rule = $pricingRuleFactories['fixed_for_ad_type_with_min_qty']::fromArray([
+            'adTypeId' => AdType::TYPE_PREMIUM,
+            'fixedPrice' => 379.99,
+            'minQty' => 4
+        ]);
 
         CustomerPricingRule::create([
             'customer_id' => $nike->getKey(),
@@ -80,10 +84,11 @@ class CustomerPricingRuleSeeder extends Seeder
             'name' => 'Ford'
         ]);
 
-        $classicRule = new $pricingRules['buy_x_free_y'];
-        $classicRule->setAdType(AdType::find(AdType::TYPE_CLASSIC));
-        $classicRule->setBonusQty(1);
-        $classicRule->setThresholdQty(4);
+        $classicRule = $pricingRuleFactories['buy_x_free_y']::fromArray([
+            'adTypeId' => AdType::TYPE_CLASSIC,
+            'bonusQty' => 1,
+            'thresholdQty' => 4
+        ]);
         CustomerPricingRule::create([
             'customer_id' => $ford->getKey(),
             'pricing_rule_id' => PricingRule::whereProviderAlias($classicRule->getAlias())->first()->getKey(),
@@ -91,9 +96,10 @@ class CustomerPricingRuleSeeder extends Seeder
             'pricing_rule_settings' => json_encode($classicRule->toArray())
         ]);
 
-        $standoutRule = new $pricingRules['fixed_for_ad_type'];
-        $standoutRule->setAdType(AdType::find(AdType::TYPE_STANDOUT));
-        $standoutRule->setFixedPrice(309.99);
+        $standoutRule = $pricingRuleFactories['fixed_for_ad_type']::fromArray([
+            'adTypeId' => AdType::TYPE_STANDOUT,
+            'fixedPrice' => 309.99
+        ]);
         CustomerPricingRule::create([
             'customer_id' => $ford->getKey(),
             'pricing_rule_id' => PricingRule::whereProviderAlias($standoutRule->getAlias())->first()->getKey(),
@@ -101,10 +107,11 @@ class CustomerPricingRuleSeeder extends Seeder
             'pricing_rule_settings' => json_encode($standoutRule->toArray())
         ]);
 
-        $premiumRule = new $pricingRules['fixed_for_ad_type_with_min_qty'];
-        $premiumRule->setAdType(AdType::find(AdType::TYPE_PREMIUM));
-        $premiumRule->setFixedPrice(389.99);
-        $premiumRule->setMinQty(3);
+        $premiumRule = $pricingRuleFactories['fixed_for_ad_type_with_min_qty']::fromArray([
+            'adTypeId' => AdType::TYPE_PREMIUM,
+            'fixedPrice' => 389.99,
+            'minQty' => 3
+        ]);
         CustomerPricingRule::create([
             'customer_id' => $ford->getKey(),
             'pricing_rule_id' => PricingRule::whereProviderAlias($premiumRule->getAlias())->first()->getKey(),

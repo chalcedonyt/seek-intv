@@ -4,6 +4,8 @@ namespace App\Services\PricingRule\Rules\Abstracts;
 use App\Models\AdType;
 use App\Models\CheckoutItem;
 
+use App\Services\PricingRule\PricingRuleInterface;
+
 abstract class AdTypePricingRuleAbstract extends PricingRuleAbstract
 {
     /**
@@ -48,6 +50,14 @@ abstract class AdTypePricingRuleAbstract extends PricingRuleAbstract
         return collect($checkoutItems)->filter(function (CheckoutItem $item) {
             return $item->adType->getKey() == $this->adType->getKey();
         })->all();
+    }
+
+    public static function fromArray(array $data): PricingRuleInterface
+    {
+        $new = parent::fromArray($data);
+        $adType = AdType::find($data['adTypeId']);
+        $new->setAdType($adType);
+        return $new;
     }
 
 }
