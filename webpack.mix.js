@@ -11,10 +11,9 @@ let mix = require('laravel-mix');
  |
  */
 
-mix.react('resources/assets/js/app.js', 'public/js')
+mix.react('resources/assets/js/rules.js', 'public/js')
 .extract([
   'axios',
-  'prop-types',
   'react',
   'react-bootstrap',
   'react-dom',

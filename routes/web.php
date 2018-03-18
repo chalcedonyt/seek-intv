@@ -12,5 +12,9 @@
 */
 
 Route::get('/', function () {
-    return view('home');
+    return view('customer-pricing-rule');
+});
+
+Route::get('/customer-pricing-rule/{rule}', function() {
+   return view('customer-pricing-rule');
 });

@@ -18,3 +18,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::get('/customer-pricing-rules', 'Api\\CustomerPricingRuleController@index');
+Route::get('/customer-pricing-rule/{customerPricingRule}', 'Api\\CustomerPricingRuleController@show');

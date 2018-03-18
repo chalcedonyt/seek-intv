@@ -13,14 +13,17 @@ require('./bootstrap');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-window.__BASE_API_URL = '/api';
 const React = require('react')
 const ReactDOM = require('react-dom')
 import {Route, BrowserRouter, Switch} from 'react-router-dom'
+import CustomerPricingRule from './components/CustomerPricingRule'
+import CustomerPricingRules from './components/CustomerPricingRules'
+
 ReactDOM.render(
     <BrowserRouter>
       <div>
-        Hi
+        <Route exact path='/' component={CustomerPricingRules} />
+        <Route exact path='/customer-pricing-rule/:ruleId' component={CustomerPricingRule} />
       </div>
     </BrowserRouter>
-, document.getElementById('app'));
+, document.getElementById('rules'));

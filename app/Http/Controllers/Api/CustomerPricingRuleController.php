@@ -44,7 +44,12 @@ class CustomerPricingRuleController extends Controller
      */
     public function show(CustomerPricingRule $customerPricingRule)
     {
-        //
+        $data = fractal()->includeCustomer()
+        ->includePricingRule()
+        ->item($customerPricingRule, new \App\Transformers\CustomerPricingRuleTransformer)
+        ->toArray();
+
+        return response()->json($data);
     }
 
     /**

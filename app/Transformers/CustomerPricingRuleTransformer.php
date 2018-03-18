@@ -17,8 +17,10 @@ class CustomerPricingRuleTransformer extends TransformerAbstract
     public function transform(CustomerPricingRule $cpr): array
     {
         return [
+            'id' => $cpr->getKey(),
             'display_name' => $cpr->display_name,
-            'updated_at' => $cpr->updated_at
+            'updated_at' => $cpr->updated_at,
+            'pricing_rule_settings' => json_decode($cpr->pricing_rule_settings, true)
         ];
     }
 
