@@ -17,5 +17,21 @@ module.exports = {
         .then(function (response) {
           return response.data;
         });
-  }
+    },
+
+    getCustomers: () => {
+      const encodedURI = window.encodeURI(`${__BASE_API_URL}/customers`);
+      return axios.get(encodedURI)
+        .then(function (response) {
+          return response.data;
+        });
+    },
+
+    getAdTypes: () => {
+      const encodedURI = window.encodeURI(`${__BASE_API_URL}/ad-types`);
+      return axios.get(encodedURI)
+        .then(function (response) {
+          return response.data;
+        });
+    }
 }

@@ -26,7 +26,7 @@ export default class CustomerPricingRule extends React.Component {
         <Breadcrumb>
           <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
           <Breadcrumb.Item active>Rule: {this.state.rule && this.state.rule.display_name}</Breadcrumb.Item>
-        </Breadcrumb>;
+        </Breadcrumb>
         {this.state.rule &&
         <Panel>
           <h1>{this.state.rule.display_name}</h1>

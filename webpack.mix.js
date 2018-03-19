@@ -12,6 +12,8 @@ let mix = require('laravel-mix');
  */
 
 mix.react('resources/assets/js/rules.js', 'public/js')
+.react('resources/assets/js/checkout-simulator.js', 'public/js')
+.react('resources/assets/js/home.js', 'public/js')
 .extract([
   'axios',
   'react',

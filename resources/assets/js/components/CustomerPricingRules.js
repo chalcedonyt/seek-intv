@@ -1,6 +1,6 @@
 const React = require('react')
 const api = require('../utils/api')
-import { Button, Table } from 'react-bootstrap'
+import { Breadcrumb, Button, Table } from 'react-bootstrap'
 
 export default class CustomerPricingRules extends React.Component {
   constructor(props) {
@@ -22,6 +22,10 @@ export default class CustomerPricingRules extends React.Component {
   render() {
     return (
       <div>
+        <Breadcrumb>
+          <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
+          <Breadcrumb.Item active>Customer Pricing Rules</Breadcrumb.Item>
+        </Breadcrumb>
         <h1>Customer Pricing Rules</h1>
         <Table>
           <thead>

@@ -16,14 +16,12 @@ require('./bootstrap');
 const React = require('react')
 const ReactDOM = require('react-dom')
 import {Route, BrowserRouter, Switch} from 'react-router-dom'
-import CustomerPricingRule from './components/CustomerPricingRule'
-import CustomerPricingRules from './components/CustomerPricingRules'
+import CheckoutSimulator from './components/CheckoutSimulator'
 
 ReactDOM.render(
     <BrowserRouter>
       <div>
-        <Route exact path='/customer-pricing-rules' component={CustomerPricingRules} />
-        <Route exact path='/customer-pricing-rule/:ruleId' component={CustomerPricingRule} />
+        <Route exact path='/checkout-simulator' component={CheckoutSimulator} />
       </div>
     </BrowserRouter>
-, document.getElementById('rules'));
+, document.getElementById('checkout-simulator'));

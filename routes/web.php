@@ -12,9 +12,14 @@
 */
 
 Route::get('/', function () {
+    return view('home');
+});
+Route::get('/checkout-simulator', function() {
+    return view('checkout-simulator');
+});
+Route::get('/customer-pricing-rules', function () {
     return view('customer-pricing-rule');
 });
-
-Route::get('/customer-pricing-rule/{rule}', function() {
-   return view('customer-pricing-rule');
+Route::get('/customer-pricing-rule/{rule}', function () {
+    return view('customer-pricing-rule');
 });
