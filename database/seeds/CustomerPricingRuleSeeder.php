@@ -17,6 +17,11 @@ class CustomerPricingRuleSeeder extends Seeder
     public function run()
     {
         Customer::unguard();
+        //create a generic customer
+        Customer::create([
+            'name' => 'Default Customer'
+        ]);
+
         CustomerPricingRule::unguard();
 
         $pricingRules = app('PricingRules');
