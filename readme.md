@@ -5,7 +5,7 @@
 ## Requirements and installation
 
 * Standard Laravel 5.6 (PHP7.1)
-* MySQL5.7 for
+* MySQL5.7 for JSON column type
 ```
 composer install
 php artisan migrate --seed #seeds the customers and pricing rules

@@ -38,7 +38,9 @@ export default class CustomerPricingRules extends React.Component {
   handleCustomerSelect(selectedCustomer) {
     this.setState({
       selectedCustomer,
-      checkoutItems: []
+      checkoutItems: [],
+      simulatedPrice: null,
+      appliedPricingRules: []
     })
   }
 
@@ -53,7 +55,8 @@ export default class CustomerPricingRules extends React.Component {
   handleItemReset() {
     this.setState({
       checkoutItems: [],
-      simulatedPrice: null
+      simulatedPrice: null,
+      appliedPricingRules: []
     })
   }
 
