@@ -77,7 +77,6 @@ class CheckoutItemCollection
             //important to differentiate NULL from 0 here.
             if (is_null($item->applied_price)) {
                 $item->applied_price = $item->adType->price;
-                $item->save();
             }
             $carriedPrice+=$item->applied_price;
             return $carriedPrice;

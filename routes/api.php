@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+Route::post('/checkout/simulate', 'Api\\CheckoutController@simulate');
 Route::get('/ad-types', 'Api\\AdTypeController@index');
 Route::get('/customers', 'Api\\CustomerController@index');
 Route::get('/customer-pricing-rules', 'Api\\CustomerPricingRuleController@index');

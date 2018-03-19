@@ -1,6 +1,6 @@
 const React = require('react')
 const api = require('../utils/api')
-import { Breadcrumb, Button, ButtonGroup, Col, Glyphicon, Grid, ListGroup, ListGroupItem, Panel, Row } from 'react-bootstrap'
+import { Alert, Breadcrumb, Button, ButtonGroup, Col, Glyphicon, Grid, ListGroup, ListGroupItem, Panel, Row } from 'react-bootstrap'
 
 export default class CustomerPricingRules extends React.Component {
   constructor(props) {
@@ -9,11 +9,13 @@ export default class CustomerPricingRules extends React.Component {
       adTypes: null,
       checkoutItems: [],
       customers: null,
-      selectedCustomer: null
+      selectedCustomer: null,
+      simulatedPrice: null
     }
     this.handleCustomerSelect = this.handleCustomerSelect.bind(this)
     this.handleItemCheckout = this.handleItemCheckout.bind(this)
     this.handleItemReset = this.handleItemReset.bind(this)
+    this.simulateCheckoutPrices = this.simulateCheckoutPrices.bind(this)
   }
 
   componentDidMount() {
@@ -42,12 +44,27 @@ export default class CustomerPricingRules extends React.Component {
   handleItemCheckout(adType) {
     this.setState({
       checkoutItems: this.state.checkoutItems.concat(adType)
+    }, () => {
+      this.simulateCheckoutPrices()
     })
   }
 
   handleItemReset() {
     this.setState({
-      checkoutItems: []
+      checkoutItems: [],
+      simulatedPrice: null
+    })
+  }
+
+  simulateCheckoutPrices() {
+    const items = this.state.checkoutItems.map((adType) => {
+      return {ad_type_id: adType.id}
+    })
+    api.simulateCheckoutPrices(this.state.selectedCustomer.id, items)
+    .then(({price: simulatedPrice}) => {
+      this.setState({
+        simulatedPrice
+      })
     })
   }
 
@@ -136,6 +153,13 @@ export default class CustomerPricingRules extends React.Component {
                       ))}
                     </ListGroup>
                   </Panel.Body>
+                  {this.state.simulatedPrice && (
+                    <Panel.Footer>
+                      <Alert bsStyle="success">
+                        Total : <strong>${this.state.simulatedPrice}</strong>
+                      </Alert>
+                    </Panel.Footer>
+                  )}
                 </Panel>
               </Panel.Body>
             </Panel>

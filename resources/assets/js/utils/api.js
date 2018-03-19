@@ -33,5 +33,19 @@ module.exports = {
         .then(function (response) {
           return response.data;
         });
+    },
+
+    simulateCheckoutPrices: (customerId, items) => {
+      const encodedURI = window.encodeURI(`${__BASE_API_URL}/checkout/simulate`);
+      return axios.post(encodedURI, {
+        customer_id: customerId,
+        items
+      }, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then(function (response) {
+          return response.data;
+        });
     }
 }
