@@ -25,20 +25,43 @@ class BuyXFreeYRuleTest extends TestCase
         $adType = AdType::inRandomOrder()->first();
 
         $rule = new BuyXFreeYRule;
-        $rule->setBonusQty(1);
-        $rule->setThresholdQty(4);
+        $rule->setThresholdQty(2);
         $rule->setAdType($adType);
 
-        //8 eligible items in checkout, should return 2
-        $checkoutItems = $this->generateCheckoutItems($adType, 8, $qtyOfDiffTypes = rand(6, 10));
+        //3 eligible items in checkout, should return 1
+        $checkoutItems = $this->generateCheckoutItems($adType, 3, $qtyOfDiffTypes = rand(6, 10));
+        $this->assertEquals(1, $rule->totalBonusQty($checkoutItems->all()));
+
+        //4 eligible items in checkout, should return 1
+        $checkoutItems = $this->generateCheckoutItems($adType, 4, $qtyOfDiffTypes = rand(6, 10));
+        $this->assertEquals(1, $rule->totalBonusQty($checkoutItems->all()));
+
+        //5 eligible items in checkout, should return 1
+        $checkoutItems = $this->generateCheckoutItems($adType, 5, $qtyOfDiffTypes = rand(6, 10));
+        $this->assertEquals(1, $rule->totalBonusQty($checkoutItems->all()));
+
+        //6 eligible items in checkout, should return 2
+        $checkoutItems = $this->generateCheckoutItems($adType, 6, $qtyOfDiffTypes = rand(6, 10));
         $this->assertEquals(2, $rule->totalBonusQty($checkoutItems->all()));
 
-        //9 eligible items in checkout, should return 2
-        $checkoutItems = $this->generateCheckoutItems($adType, 9, $qtyOfDiffTypes = rand(6, 10));
-        $this->assertEquals(2, $rule->totalBonusQty($checkoutItems->all()));
+        $rule = new BuyXFreeYRule;
+        $rule->setThresholdQty(4);
+        $rule->setAdType($adType);
 
         //3 eligible items in checkout, should return 0
         $checkoutItems = $this->generateCheckoutItems($adType, 3, $qtyOfDiffTypes = rand(6, 10));
         $this->assertEquals(0, $rule->totalBonusQty($checkoutItems->all()));
+
+        //5 eligible items in checkout, should return 1
+        $checkoutItems = $this->generateCheckoutItems($adType, 5, $qtyOfDiffTypes = rand(6, 10));
+        $this->assertEquals(1, $rule->totalBonusQty($checkoutItems->all()));
+
+        //6 eligible items in checkout, should return 1
+        $checkoutItems = $this->generateCheckoutItems($adType, 6, $qtyOfDiffTypes = rand(6, 10));
+        $this->assertEquals(1, $rule->totalBonusQty($checkoutItems->all()));
+
+        //10 eligible items in checkout, should return 2
+        $checkoutItems = $this->generateCheckoutItems($adType, 10, $qtyOfDiffTypes = rand(6, 10));
+        $this->assertEquals(2, $rule->totalBonusQty($checkoutItems->all()));
     }
 }

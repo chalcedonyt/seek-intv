@@ -4,7 +4,7 @@ namespace App\TransferObjects;
 class ResolvedPrice extends TransferObjectAbstract
 {
     protected $price;
-    protected $appliedPricingRules;
+    protected $appliedPricingRules = [];
 
     public function __construct(float $price, array $appliedPricingRules)
     {

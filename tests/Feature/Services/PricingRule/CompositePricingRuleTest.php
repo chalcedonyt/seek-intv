@@ -77,7 +77,6 @@ class CompositePricingRuleTest extends TestCase
         ]);
         $threeForTwoRule = \App\Services\PricingRule\Rules\Factories\BuyXFreeYRuleFactory::fromArray([
             'adTypeId' => AdType::TYPE_CLASSIC,
-            'bonusQty' => 1,
             'thresholdQty' => 2
         ]);
         CustomerPricingRule::unguard();
@@ -177,7 +176,6 @@ class CompositePricingRuleTest extends TestCase
         ]);
         $classicPriceRule = \App\Services\PricingRule\Rules\Factories\BuyXFreeYRuleFactory::fromArray([
             'adTypeId' => AdType::TYPE_CLASSIC,
-            'bonusQty' => 1,
             'thresholdQty' => 4
         ]);
         $standoutPriceRule = \App\Services\PricingRule\Rules\Factories\FixedAdTypePriceRuleFactory::fromArray([

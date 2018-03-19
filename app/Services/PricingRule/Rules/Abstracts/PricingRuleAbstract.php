@@ -26,4 +26,18 @@ abstract class PricingRuleAbstract
     {
         return $this->displayName;
     }
+
+    /**
+     * Whether this rule should be applied
+     *
+     * @param array $checkoutItems
+     * @return boolean
+     */
+    abstract public function shouldApply(array $checkoutItems): bool;
+
+    /**
+     * Description of this rule
+     * @return string
+     */
+    abstract public function __toString(): string;
 }

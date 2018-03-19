@@ -40,11 +40,18 @@ class FixedAdTypePriceWithMinQtyRule extends FixedAdTypePriceRule implements Pri
             if ($this->checkoutItemIsOfAdType($checkoutItem, $this->adType->getKey())) {
                 if ($this->hasMinQty($checkoutItems)) {
                     $checkoutItem->applied_price = $this->fixedPrice;
-                    // $checkoutItem->rulesApplied[] = $this->toArray();
                 }
             }
             return $checkoutItem;
         })->all();
+    }
+
+    /**
+     * @return boolean
+     */
+    public function shouldApply(array $checkoutItems): bool
+    {
+        return count($this->itemsOfAdType($checkoutItems)) >= $this->minQty;
     }
 
     /**
@@ -83,5 +90,18 @@ class FixedAdTypePriceWithMinQtyRule extends FixedAdTypePriceRule implements Pri
             return $this->checkoutItemIsOfAdType($checkoutItem, $this->adType->getKey());
         })->count();
         return $numOfEligibleAdTypes >= $this->minQty;
+    }
+
+    /**
+     * Description of this rule
+     * @return string
+     */
+    public function __toString(): string
+    {
+        return sprintf('%s: fixed price of $%.2f for min qty of %d',
+            $this->adType->display_name,
+            $this->fixedPrice,
+            $this->minQty
+        );
     }
 }

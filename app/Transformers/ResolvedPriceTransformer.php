@@ -15,7 +15,8 @@ class ResolvedPriceTransformer extends TransformerAbstract
     public function transform(ResolvedPrice $resolvedPrice)
     {
         return [
-            'price' => $resolvedPrice->price
+            'price' => $resolvedPrice->price,
+            'applied_pricing_rules' => $resolvedPrice->appliedPricingRules
         ];
     }
 }

@@ -39,10 +39,19 @@ class FixedAdTypePriceRule extends AdTypePricingRuleAbstract implements PricingR
         return collect($checkoutItems)->map(function (CheckoutItem $checkoutItem): CheckoutItem {
             if ($this->checkoutItemIsOfAdType($checkoutItem, $this->adType->getKey())) {
                 $checkoutItem->applied_price = $this->fixedPrice;
-                // $checkoutItem->applied_rules[] = $this->toArray();
             }
             return $checkoutItem;
         })->all();
+    }
+
+    /**
+     * This rule always applies as long as assigned to a customer
+     *
+     * @return boolean
+     */
+    public function shouldApply(array $checkoutItems): bool
+    {
+        return count($this->itemsOfAdType($checkoutItems)) > 0;
     }
 
     /**
@@ -68,5 +77,17 @@ class FixedAdTypePriceRule extends AdTypePricingRuleAbstract implements PricingR
             'adTypeId' => 'required|exists:ad_type,id',
             'fixedPrice' => 'required|integer'
         ]);
+    }
+
+    /**
+     * Description of this rule
+     * @return string
+     */
+    public function __toString(): string
+    {
+        return sprintf('%s: fixed price of $%.2f',
+            $this->adType->display_name,
+            $this->fixedPrice
+        );
     }
 }

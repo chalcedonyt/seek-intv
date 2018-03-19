@@ -10,7 +10,8 @@ export default class CustomerPricingRules extends React.Component {
       checkoutItems: [],
       customers: null,
       selectedCustomer: null,
-      simulatedPrice: null
+      simulatedPrice: null,
+      appliedPricingRules: []
     }
     this.handleCustomerSelect = this.handleCustomerSelect.bind(this)
     this.handleItemCheckout = this.handleItemCheckout.bind(this)
@@ -61,9 +62,10 @@ export default class CustomerPricingRules extends React.Component {
       return {ad_type_id: adType.id}
     })
     api.simulateCheckoutPrices(this.state.selectedCustomer.id, items)
-    .then(({price: simulatedPrice}) => {
+    .then(({price: simulatedPrice, applied_pricing_rules: appliedPricingRules}) => {
       this.setState({
-        simulatedPrice
+        simulatedPrice,
+        appliedPricingRules
       })
     })
   }
@@ -118,7 +120,7 @@ export default class CustomerPricingRules extends React.Component {
           {this.state.selectedCustomer && (
             <Panel>
               <Panel.Heading>
-                Simulate a checkout for {this.state.selectedCustomer.name}
+                Simulate a checkout for <strong>{this.state.selectedCustomer.name}</strong>
               </Panel.Heading>
               <Panel.Body>
                 <h3>Select an SKU to scan:</h3>
@@ -148,7 +150,7 @@ export default class CustomerPricingRules extends React.Component {
                     <ListGroup>
                       {this.state.checkoutItems.map((item, i) => (
                         <li className='list-group-item' key={i}>
-                          {item.display_name}
+                          {item.display_name} - Normal price of ${item.price}
                         </li>
                       ))}
                     </ListGroup>
@@ -157,6 +159,15 @@ export default class CustomerPricingRules extends React.Component {
                     <Panel.Footer>
                       <Alert bsStyle="success">
                         Total : <strong>${this.state.simulatedPrice}</strong>
+                        {this.state.appliedPricingRules.length > 0 && (
+                          <Alert bsStyle="info">
+                            <ul>
+                            {this.state.appliedPricingRules.map((rule, i) => (
+                              <li key={i}>{rule}</li>
+                            ))}
+                            </ul>
+                          </Alert>
+                        )}
                       </Alert>
                     </Panel.Footer>
                   )}

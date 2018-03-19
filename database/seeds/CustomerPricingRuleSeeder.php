@@ -30,7 +30,6 @@ class CustomerPricingRuleSeeder extends Seeder
         ]);
         $rule = $pricingRuleFactories['buy_x_free_y']::fromArray([
             'adTypeId' => AdType::TYPE_CLASSIC,
-            'bonusQty' => 1,
             'thresholdQty' => 2
         ]);
 
@@ -86,7 +85,6 @@ class CustomerPricingRuleSeeder extends Seeder
 
         $classicRule = $pricingRuleFactories['buy_x_free_y']::fromArray([
             'adTypeId' => AdType::TYPE_CLASSIC,
-            'bonusQty' => 1,
             'thresholdQty' => 4
         ]);
         CustomerPricingRule::create([

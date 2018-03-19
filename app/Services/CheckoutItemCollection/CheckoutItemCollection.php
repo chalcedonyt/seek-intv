@@ -64,7 +64,8 @@ class CheckoutItemCollection
         }, $this->items);
 
         $price = $this->resolveItemPrices($resolvedItems);
-        return new ResolvedPrice($price, []);
+        $appliedRules = $this->getAppliedRules($resolvedItems);
+        return new ResolvedPrice($price, $appliedRules);
     }
 
     /**
@@ -82,5 +83,21 @@ class CheckoutItemCollection
             return $carriedPrice;
         }, 0);
         return round($price, 2);
+    }
+
+    /**
+     *
+     * @param array $checkoutItems
+     * @return array
+     */
+    protected function getAppliedRules(array $checkoutItems): array
+    {
+        return collect($this->rules)->reduce(function (array $appliedPricingRules, PricingRuleInterface $rule) use ($checkoutItems) {
+            if ($rule->shouldApply($checkoutItems)) {
+                //calls the required __toString method
+                $appliedPricingRules[]= (string)$rule;
+            }
+            return $appliedPricingRules;
+        }, []);
     }
 }

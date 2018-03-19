@@ -12,9 +12,9 @@ interface PricingRuleInterface
      * @param array<CheckoutItem> $checkoutItems
      * @return array<CheckoutItem> A new array
      */
-    public function apply(array $checkoutItems): array;
     public function getAlias(): string;
     public function getDisplayName(): string;
-    // public function getVariables(): array;
+    public function apply(array $checkoutItems): array;
+    public function shouldApply(array $checkoutItems): bool;
     public function getValidator(array $data): Validator;
 }

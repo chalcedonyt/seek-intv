@@ -18,26 +18,11 @@ class BuyXFreeYRule extends AdTypePricingRuleAbstract implements PricingRuleInte
      */
     protected $displayName = 'Buy X free Y';
     /**
-     * The number of free items given for every y items checked out
-     *
-     * @var int
-     */
-    protected $bonusQty;
-    /**
-     * The number of items needed in a checkout to trigger
+     * The number of items needed in a checkout to trigger 1 free item
      *
      * @var int
      */
     protected $thresholdQty;
-
-    /**
-     * @param integer $qty
-     * @return void
-     */
-    public function setBonusQty(int $qty)
-    {
-        $this->bonusQty = $qty;
-    }
 
     /**
      * @param integer $thresholdQty
@@ -56,7 +41,6 @@ class BuyXFreeYRule extends AdTypePricingRuleAbstract implements PricingRuleInte
     {
         $parent = parent::toArray();
         return array_merge($parent, [
-            'bonusQty' => $this->bonusQty,
             'thresholdQty' => $this->thresholdQty
         ]);
     }
@@ -68,14 +52,8 @@ class BuyXFreeYRule extends AdTypePricingRuleAbstract implements PricingRuleInte
      */
     public function getValidator(array $data): Validator
     {
-        //Free 1 for every 3 would be valid, while free 4 for every 3 would not be allowed
-        $maxBonusQty = isset($data['thresholdQty']) && $data['thresholdQty'] > 1
-        ? intval($data['thresholdQty'])-1
-        : 1;
-
         return Validator::make($data, [
             'adTypeId' => 'required|exists:ad_type,id',
-            'bonusQty' => 'required|integer|min:1|max:'.$maxBonusQty,
             'thresholdQty' => 'required|integer|min:1'
         ]);
     }
@@ -91,16 +69,26 @@ class BuyXFreeYRule extends AdTypePricingRuleAbstract implements PricingRuleInte
         return collect($checkoutItems)->map(function (CheckoutItem $checkoutItem) use (&$freeItemCount): CheckoutItem {
             if ($this->checkoutItemIsOfAdType($checkoutItem, $this->adType->getKey()) && $freeItemCount > 0) {
                 $checkoutItem->applied_price = 0;
-                // $checkoutItem->rulesApplied[] = $this->toArray();
-                $freeItemCount--;
+                --$freeItemCount;
             }
             return $checkoutItem;
         })->all();
     }
 
     /**
-     * Return the number of bonus items applicable.
-     * E.g. For a "Buy 3 free 2", return 4 if the input is 7.
+     * @param array $checkoutItems
+     * @return boolean
+     */
+    public function shouldApply(array $checkoutItems): bool
+    {
+        return $this->thresholdQty < count($this->itemsOfAdType($checkoutItems));
+    }
+
+    /**
+     * Return the number of bonus items applicable - bounded by the qty in checkout.
+     * E.g. For a "Buy 3 free 1":
+     * 7 items in cart would resolve to 1 free item.
+     * 8 items in cart would resolve to 2 free items.
      *
      * @param array $checkoutItems
      * @return integer
@@ -108,7 +96,27 @@ class BuyXFreeYRule extends AdTypePricingRuleAbstract implements PricingRuleInte
     public function totalBonusQty(array $checkoutItems): int
     {
         $eligibleItems = $this->itemsOfAdType($checkoutItems);
-        $totalBonusQty = $this->bonusQty * floor(count($eligibleItems)/$this->thresholdQty);
-        return $totalBonusQty;
+        $bonusItemCount = 0;
+        $thresholdForBonus = $this->thresholdQty;
+        for ($i = 1; $i < count($eligibleItems)+1; $i++) {
+            if ($i > $thresholdForBonus) {
+                $bonusItemCount++;
+                $thresholdForBonus += $this->thresholdQty+1;
+            }
+        }
+        return $bonusItemCount;
+    }
+
+    /**
+     * Description of this rule
+     * @return string
+     */
+    public function __toString(): string
+    {
+        return sprintf('%s: %d for %d',
+            $this->adType->display_name,
+            $this->thresholdQty+1,
+            $this->thresholdQty
+        );
     }
 }

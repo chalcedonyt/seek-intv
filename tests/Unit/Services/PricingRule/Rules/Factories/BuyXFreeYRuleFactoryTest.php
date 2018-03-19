@@ -25,7 +25,6 @@ class BuyXFreeYRuleFactoryTest extends TestCase
         $rule = new BuyXFreeYRule;
         $rule->setAdType($adType);
         $rule->setThresholdQty(rand(5, 10));
-        $rule->setBonusQty(rand(2, 4));
 
         $data = $rule->toArray();
 
