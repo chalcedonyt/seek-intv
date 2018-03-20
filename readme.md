@@ -2,6 +2,9 @@
 
 [![Build Status](https://travis-ci.org/chalcedonyt/seek-intv.svg?branch=master)](https://travis-ci.org/chalcedonyt/seek-intv)
 
+[simulator](https://github.com/chalcedonyt/seek-intv/blob/master/simulator.png?raw=true)
+[rule browser](https://github.com/chalcedonyt/seek-intv/blob/master/rules.png?raw=true)
+
 ## Requirements and installation
 
 * Standard Laravel 5.6 (PHP7.1)
