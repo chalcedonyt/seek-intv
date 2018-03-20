@@ -15,20 +15,28 @@ php artisan serve
 
 ## Language/framework considerations
 
-* NodeJS doesn't have built-in type-safety or proper class mechanics for an extensible rule system, hence PHP7
-* I expect that with the patterns used, adding new rules or configuring values for existing ones will be easy.
+* NodeJS doesn't have built-in type-safety or proper class mechanics for an extensible rule system (without a whole bunch of extensions), hence PHP7
+* I expect that with the patterns used, adding new rules or configuring values for existing ones will be easy, as required methods can be enforced with interfaces and abstract classes.
 
 ## Patterns and structure
 
 * Used standard Abstract/Interface/inheritance patterns to construct stackable rules (`App\Services\PricingRule`)
-* Use of Factories to hydrate rules from a database
 * A TransferObject is used to contain the final price as well as any rules applied
-* A service provider to contain references to existing rules. (`App\Providers\PricingRuleProvider`)
+* Use of Factories to hydrate rules from a database
+* A simple service provider to contain references to existing rules and their factories through their aliases (`App\Providers\PricingRuleProvider`)
+* Every rule exposes their own display name, alias and validation instances.
+* A favourite of mine, the Fractal Transformer library to standardize API output
 * Unit tests focused on testing the accuracy of the pricing rules.
 
 ## Other notes
 
-* Quick frontend in React to display pricing simulations.
+* Quick frontend in React to display pricing simulations ("quick" meaning no tests or prop-types)
 * As we are just testing prices, there is no actual checkout saved at the end, though the prices are simulated.
+* It would have been possible to assign new rules from scratch, but this was not done because of time. However existing rules can be edited as PoC.
+* It would also have been possible to make the React components more reusable, but this was not the focus.
+
+## Some of the things validated
+* Trying to key in a fixed price higher than the normal price
+* For "X for the price of Y", keying in a value of Y > X is invalid
 
 
