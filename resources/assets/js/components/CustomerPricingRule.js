@@ -8,12 +8,38 @@ export default class CustomerPricingRule extends React.Component {
     this.state = {
       rule: null
     }
+    this.buildRuleComponent = this.buildRuleComponent.bind(this)
+    this.handleUpdate = this.handleUpdate.bind(this)
+    this.loadRule = this.loadRule.bind(this)
   }
 
   componentDidMount() {
+    this.loadRule()
+  }
+
+  buildRuleComponent(pricingRule) {
+    switch (pricingRule.provider_alias) {
+      case 'x_for_the_price_of_y':
+        return require('./rules/XForThePriceOfYRule')
+      case 'fixed_for_ad_type':
+        return require('./rules/XForThePriceOfYRule')
+      default:
+        return require('./rules/XForThePriceOfYRule')
+    }
+  }
+
+  handleUpdate(params) {
+    api.updateCustomerPricingRule(this.props.match.params.ruleId, params)
+    .then((data) => {
+      this.loadRule()
+    }, ({error}) => {
+      alert(error);
+    })
+  }
+
+  loadRule() {
     api.getCustomerPricingRule(this.props.match.params.ruleId)
     .then((rule) => {
-      console.log(rule)
       this.setState({
         rule
       })
@@ -21,6 +47,10 @@ export default class CustomerPricingRule extends React.Component {
   }
 
   render() {
+    if (this.state.rule && this.state.rule.pricingRule ) {
+      var RuleComponent = this.buildRuleComponent(this.state.rule.pricingRule)
+    }
+
     return (
       <div>
         <Breadcrumb>
@@ -39,19 +69,11 @@ export default class CustomerPricingRule extends React.Component {
                 <p>{this.state.rule.pricingRule.display_name}</p>
               </Col>
             </Row>
-            <Row>
-              <Col md={3} xs={3}>
-                <strong>Settings:</strong>
-              </Col>
-              <Col md={3} xs={3}>
-                <ul>
-                  {Object.keys(this.state.rule.pricing_rule_settings).map((key, i) => (
-                    <li key={i}>{key}: {this.state.rule.pricing_rule_settings[key]}</li>
-                  ))}
-                </ul>
-              </Col>
-            </Row>
           </Grid>
+          <RuleComponent
+            settings={this.state.rule.pricing_rule_settings}
+            onSubmit={this.handleUpdate}
+          />
         </Panel>
       }
       </div>

@@ -3,7 +3,7 @@ const axios = require('axios')
 const QueryString = require('query-string')
 
 module.exports = {
-  getCustomerPricingRules: () => {
+    getCustomerPricingRules: () => {
     const encodedURI = window.encodeURI(`${__BASE_API_URL}/customer-pricing-rules`);
     return axios.get(encodedURI)
       .then(function (response) {
@@ -12,15 +12,23 @@ module.exports = {
     },
 
     getCustomerPricingRule: (ruleId) => {
-      const encodedURI = window.encodeURI(`${__BASE_API_URL}/customer-pricing-rule/${ruleId}`);
+      const encodedURI = window.encodeURI(`${__BASE_API_URL}/customer-pricing-rule/${ruleId}`)
       return axios.get(encodedURI)
         .then(function (response) {
           return response.data;
         });
     },
 
+    updateCustomerPricingRule: (ruleId, params) => {
+      const encodedURI = window.encodeURI(`${__BASE_API_URL}/customer-pricing-rule/${ruleId}`)
+      return axios.put(encodedURI)
+        .then(function (response) {
+          return response.data;
+        });
+    },
+
     getCustomers: () => {
-      const encodedURI = window.encodeURI(`${__BASE_API_URL}/customers`);
+      const encodedURI = window.encodeURI(`${__BASE_API_URL}/customers`)
       return axios.get(encodedURI)
         .then(function (response) {
           return response.data;
@@ -28,7 +36,7 @@ module.exports = {
     },
 
     getAdTypes: () => {
-      const encodedURI = window.encodeURI(`${__BASE_API_URL}/ad-types`);
+      const encodedURI = window.encodeURI(`${__BASE_API_URL}/ad-types`)
       return axios.get(encodedURI)
         .then(function (response) {
           return response.data;
@@ -36,7 +44,7 @@ module.exports = {
     },
 
     simulateCheckoutPrices: (customerId, items) => {
-      const encodedURI = window.encodeURI(`${__BASE_API_URL}/checkout/simulate`);
+      const encodedURI = window.encodeURI(`${__BASE_API_URL}/checkout/simulate`)
       return axios.post(encodedURI, {
         customer_id: customerId,
         items

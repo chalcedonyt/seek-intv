@@ -21,3 +21,4 @@ Route::get('/ad-types', 'Api\\AdTypeController@index');
 Route::get('/customers', 'Api\\CustomerController@index');
 Route::get('/customer-pricing-rules', 'Api\\CustomerPricingRuleController@index');
 Route::get('/customer-pricing-rule/{customerPricingRule}', 'Api\\CustomerPricingRuleController@show');
+Route::put('/customer-pricing-rule/{customerPricingRule}', 'Api\\CustomerPricingRuleController@update');

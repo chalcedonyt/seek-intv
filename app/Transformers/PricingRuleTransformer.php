@@ -14,7 +14,8 @@ class PricingRuleTransformer extends TransformerAbstract
     public function transform(\App\Models\PricingRule $pr)
     {
         return [
-            'display_name' => $pr->display_name
+            'display_name' => $pr->display_name,
+            'provider_alias' => $pr->provider_alias
         ];
     }
 }
