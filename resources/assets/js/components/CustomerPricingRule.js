@@ -6,9 +6,12 @@ export default class CustomerPricingRule extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      rule: null
+      rule: null,
+      displayName: ''
     }
     this.buildRuleComponent = this.buildRuleComponent.bind(this)
+    this.handleDisplayNameChange = this.handleDisplayNameChange.bind(this)
+    this.handleDisplayNameSuggestion = this.handleDisplayNameSuggestion.bind(this)
     this.handleUpdate = this.handleUpdate.bind(this)
     this.loadRule = this.loadRule.bind(this)
   }
@@ -28,12 +31,29 @@ export default class CustomerPricingRule extends React.Component {
     }
   }
 
-  handleUpdate(params) {
+  handleDisplayNameChange(e) {
+    this.setState({
+      displayName: e.target.value
+    })
+  }
+
+  handleDisplayNameSuggestion(displayName) {
+    this.setState({
+      displayName
+    })
+  }
+
+  handleUpdate(settings) {
+    const params = {
+      settings,
+      display_name: this.state.displayName
+    }
     api.updateCustomerPricingRule(this.props.match.params.ruleId, params)
     .then((data) => {
       this.loadRule()
-    }, ({error}) => {
-      alert(error);
+      alert('Rule updated!')
+    }, (error) => {
+      alert(error.response.data.error);
     })
   }
 
@@ -41,7 +61,8 @@ export default class CustomerPricingRule extends React.Component {
     api.getCustomerPricingRule(this.props.match.params.ruleId)
     .then((rule) => {
       this.setState({
-        rule
+        rule,
+        displayName: rule.display_name
       })
     })
   }
@@ -64,15 +85,32 @@ export default class CustomerPricingRule extends React.Component {
           <Grid>
             <Row>
               <Col md={3} xs={3}>
+                <strong>Customer:</strong>
+              </Col>
+              <Col md={5} xs={5}>
+                <p>{this.state.rule.customer.name}</p>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={3} xs={3}>
                 <strong>Base Rule:</strong>
               </Col>
-              <Col md={3} xs={3}>
+              <Col md={5} xs={5}>
                 <p>{this.state.rule.pricingRule.display_name}</p>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={3} xs={3}>
+                <strong>Display rule as:</strong>
+              </Col>
+              <Col md={5} xs={5}>
+                <FormControl type='text' onChange={this.handleDisplayNameChange} value={this.state.displayName} />
               </Col>
             </Row>
           </Grid>
           <RuleComponent
             settings={this.state.rule.pricing_rule_settings}
+            onSuggestedDisplayName={this.handleDisplayNameSuggestion}
             onSubmit={this.handleUpdate}
           />
         </Panel>

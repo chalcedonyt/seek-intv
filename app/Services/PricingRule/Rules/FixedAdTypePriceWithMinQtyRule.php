@@ -69,13 +69,13 @@ class FixedAdTypePriceWithMinQtyRule extends FixedAdTypePriceRule implements Pri
     /**
      *
      * @param array $data
-     * @return Validator
+     * @return \Illuminate\Validation\Validator
      */
-    public function getValidator(array $data): Validator
+    public function getValidation(array $data): \Illuminate\Validation\Validator
     {
         return Validator::make($data, [
-            'adTypeId' => 'required|exists:ad_type,id',
-            'fixedPrice' => 'required|integer',
+            'adTypeId' => 'required|exists:ad_types,id',
+            'fixedPrice' => 'required|numeric|max:'.$this->adType->price,
             'minQty' => 'required|integer|min:1'
         ]);
     }

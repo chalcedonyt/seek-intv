@@ -6,6 +6,8 @@ use App\Models\CustomerPricingRule;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
+use Validator;
+
 class CustomerPricingRuleController extends Controller
 {
     /**
@@ -61,6 +63,28 @@ class CustomerPricingRuleController extends Controller
      */
     public function update(Request $request, CustomerPricingRule $customerPricingRule)
     {
+        $factoryClass = app('PricingRuleFactories')[$customerPricingRule->pricingRule->provider_alias];
+        $settingData = json_decode($customerPricingRule->pricing_rule_settings, $assoc = true);
+        $inputValidation = \Validator::make($request->all(), [
+            'display_name' => 'string|required|min:5'
+        ]);
+
+        $rule = $factoryClass::fromArray($settingData);
+        $ruleValidation = $rule->getValidation($request->input('settings'));
+        if ($inputValidation->fails() || $ruleValidation->fails()) {
+            $errorMsgs = collect($ruleValidation->errors())
+            ->concat(collect($inputValidation->errors()))
+            ->flatten()
+            ->implode("\r\n");
+            return response()->json([
+                'error' => $errorMsgs
+            ], 422);
+        }
+        $customerPricingRule->pricing_rule_settings = json_encode($request->input('settings'));
+        $customerPricingRule->display_name = $request->input('display_name');
+        $customerPricingRule->save();
+
+        return $this->show($customerPricingRule);
     }
 
     /**

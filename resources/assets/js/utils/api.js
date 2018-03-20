@@ -21,10 +21,14 @@ module.exports = {
 
     updateCustomerPricingRule: (ruleId, params) => {
       const encodedURI = window.encodeURI(`${__BASE_API_URL}/customer-pricing-rule/${ruleId}`)
-      return axios.put(encodedURI)
-        .then(function (response) {
-          return response.data;
-        });
+      return axios.put(encodedURI, params, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(function (response) {
+        return response.data
+      });
     },
 
     getCustomers: () => {

@@ -18,6 +18,7 @@ class XForThePriceOfYRule extends React.Component {
     }
 
     this.handleAdTypeChange = this.handleAdTypeChange.bind(this)
+    this.handleChange = this.handleChange.bind(this)
     this.handleCalculatedQtyChange = this.handleCalculatedQtyChange.bind(this)
     this.handleThresholdQtyChange = this.handleThresholdQtyChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
@@ -27,7 +28,7 @@ class XForThePriceOfYRule extends React.Component {
     this.setState({
       thresholdQty: this.props.settings.thresholdQty,
       calculatedQty: this.props.settings.calculatedQty,
-      selectedAdTypeId: this.props.settings.adTypeId
+      selectedAdTypeId: parseInt(this.props.settings.adTypeId)
     }, () => {
       api.getAdTypes()
       .then(({ad_types: adTypes}) => {
@@ -47,13 +48,18 @@ class XForThePriceOfYRule extends React.Component {
   handleAdTypeChange(e) {
     this.setState({
       selectedAdTypeId: e.target.value
-    })
+    }, this.handleChange)
   }
 
   handleCalculatedQtyChange(e) {
     this.setState({
       calculatedQty: e.target.value
-    })
+    }, this.handleChange)
+  }
+
+  handleChange() {
+    const adType = this.state.adTypes.find((adType) => adType.id == this.state.selectedAdTypeId)
+    this.props.onSuggestedDisplayName(`${adType.display_name}: ${this.state.thresholdQty} for the price of ${this.state.calculatedQty}`)
   }
 
   handleSubmit() {
@@ -70,7 +76,7 @@ class XForThePriceOfYRule extends React.Component {
   handleThresholdQtyChange(e) {
     this.setState({
       thresholdQty: e.target.value
-    })
+    }, this.handleChange)
   }
 
   render() {
@@ -82,7 +88,10 @@ class XForThePriceOfYRule extends React.Component {
               <strong>Apply for ad type:</strong>
             </Col>
             <Col md={8} xs={8}>
-              <FormControl componentClass="select" defaultValue={this.state.selectedAdTypeId} onChange={this.handleAdTypeChange}>
+              <FormControl
+                componentClass="select"
+                value={this.state.selectedAdTypeId}
+                onChange={this.handleAdTypeChange}>
               {this.state.adTypes && this.state.adTypes.map((adType, i) => (
                 <option key={i} value={adType.id}>
                   {adType.display_name}

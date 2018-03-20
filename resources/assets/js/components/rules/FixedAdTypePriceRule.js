@@ -17,6 +17,7 @@ class FixedAdTypePriceRule extends React.Component {
     }
 
     this.handleAdTypeChange = this.handleAdTypeChange.bind(this)
+    this.handleChange = this.handleChange.bind(this)
     this.handleFixedPriceChange = this.handleFixedPriceChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
   }
@@ -24,7 +25,7 @@ class FixedAdTypePriceRule extends React.Component {
   componentDidMount() {
     this.setState({
       fixedPrice: this.props.settings.fixedPrice,
-      selectedAdTypeId: this.props.settings.adTypeId
+      selectedAdTypeId: parseInt(this.props.settings.adTypeId)
     }, () => {
       api.getAdTypes()
       .then(({ad_types: adTypes}) => {
@@ -42,13 +43,18 @@ class FixedAdTypePriceRule extends React.Component {
   handleAdTypeChange(e) {
     this.setState({
       selectedAdTypeId: e.target.value
-    })
+    }, this.handleChange)
+  }
+
+  handleChange() {
+    const adType = this.state.adTypes.find((adType) => adType.id == this.state.selectedAdTypeId)
+    this.props.onSuggestedDisplayName(`${adType.display_name}: Fixed price of $${this.state.fixedPrice}`)
   }
 
   handleFixedPriceChange(e) {
     this.setState({
       fixedPrice: e.target.value
-    })
+    }, this.handleChange)
   }
 
   handleSubmit() {
@@ -58,7 +64,9 @@ class FixedAdTypePriceRule extends React.Component {
       adTypeId: this.state.selectedAdTypeId,
       fixedPrice: this.state.fixedPrice,
     }
-    this.props.onSubmit(params)
+    // this.props.onSubmit(params)
+    const adType = _.find(this.state.adTypes, {id: this.state.selectedAdTypeId})
+    this.props.onSuggestedDisplayName(`${adType.display_name}: Fixed price of ${params.fixedPrice}`)
   }
 
   handleThresholdQtyChange(e) {
@@ -76,7 +84,10 @@ class FixedAdTypePriceRule extends React.Component {
               <strong>Apply for ad type:</strong>
             </Col>
             <Col md={8} xs={8}>
-              <FormControl componentClass="select" defaultValue={this.state.selectedAdTypeId} onChange={this.handleAdTypeChange}>
+              <FormControl
+                componentClass="select"
+                value={this.state.selectedAdTypeId}
+                onChange={this.handleAdTypeChange}>
               {this.state.adTypes && this.state.adTypes.map((adType, i) => (
                 <option key={i} value={adType.id}>
                   {adType.display_name}

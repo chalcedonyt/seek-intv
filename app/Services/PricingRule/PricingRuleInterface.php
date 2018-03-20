@@ -2,7 +2,6 @@
 namespace App\Services\PricingRule;
 
 use App\TransferObjects\ResolvedPrice;
-use Validator;
 
 interface PricingRuleInterface
 {
@@ -16,5 +15,5 @@ interface PricingRuleInterface
     public function getDisplayName(): string;
     public function apply(array $checkoutItems): array;
     public function shouldApply(array $checkoutItems): bool;
-    public function getValidator(array $data): Validator;
+    public function getValidation(array $data): \Illuminate\Validation\Validator;
 }

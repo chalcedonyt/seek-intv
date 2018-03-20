@@ -63,14 +63,15 @@ class XForThePriceOfYRule extends AdTypePricingRuleAbstract implements PricingRu
     /**
      *
      * @param array $data
-     * @return Validator
+     * @return \Illuminate\Validation\Validator
      */
-    public function getValidator(array $data): Validator
+    public function getValidation(array $data): \Illuminate\Validation\Validator
     {
+        $thresholdQty = isset($data['thresholdQty']) ? $data['thresholdQty'] : 0;
         return Validator::make($data, [
-            'adTypeId' => 'required|exists:ad_type,id',
+            'adTypeId' => 'required|exists:ad_types,id',
             'thresholdQty' => 'required|integer|min:1',
-            'calculatedQty' => 'required|integer|min:1'
+            'calculatedQty' => 'required|integer|max:'.($data['thresholdQty']-1)
         ]);
     }
 

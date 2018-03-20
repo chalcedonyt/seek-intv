@@ -28,6 +28,13 @@ abstract class PricingRuleAbstract
     }
 
     /**
+     *
+     * @param array $data
+     * @return \Illuminate\Validation\Validator
+     */
+    abstract public function getValidation(array $data): \Illuminate\Validation\Validator;
+
+    /**
      * Whether this rule should be applied
      *
      * @param array $checkoutItems
