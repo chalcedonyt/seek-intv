@@ -168,7 +168,7 @@ export default class CustomerPricingRules extends React.Component {
                   {this.state.simulatedPrice && (
                     <Panel.Footer>
                       {this.state.isUpdating
-                      ? <Alert bsStyle="success">'Updating...'</Alert>
+                      ? <Alert bsStyle="success">Updating...</Alert>
                       : <Alert bsStyle="success">
                         Total : <strong>${this.state.simulatedPrice}</strong>
                         {this.state.appliedPricingRules.length > 0 && (

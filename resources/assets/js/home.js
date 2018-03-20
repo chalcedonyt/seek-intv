@@ -23,10 +23,10 @@ ReactDOM.render(
       <Jumbotron>
         <h1>Customer Pricing Rules Simulator</h1>
         <p>
-          Click on <em>Pricing Rules</em> to review and customize pricing rules.
+          Choose <em>Pricing Rules</em> to review and customize pricing rules.
         </p>
         <p>
-          Click on <em>Checkout Simulator</em> to test the rules and check out items.
+          Choose <em>Checkout Simulator</em> to test the rules and check out items.
         </p>
         <Button href="/customer-pricing-rules" bsStyle='info'>Pricing Rules</Button>
         <Button href="/checkout-simulator" bsStyle='success'>Checkout Simulator</Button>
