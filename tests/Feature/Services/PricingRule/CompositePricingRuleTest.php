@@ -75,9 +75,10 @@ class CompositePricingRuleTest extends TestCase
         $customer = factory(Customer::class)->create([
             'name' => 'Mock unilever'
         ]);
-        $threeForTwoRule = \App\Services\PricingRule\Rules\Factories\BuyXFreeYRuleFactory::fromArray([
+        $threeForTwoRule = \App\Services\PricingRule\Rules\Factories\XForThePriceOfYRuleFactory::fromArray([
             'adTypeId' => AdType::TYPE_CLASSIC,
-            'thresholdQty' => 2
+            'thresholdQty' => 3,
+            'calculatedQty' => 2
         ]);
         CustomerPricingRule::unguard();
         $customerPricingRule = factory(CustomerPricingRule::class)->create([
@@ -174,9 +175,10 @@ class CompositePricingRuleTest extends TestCase
         $customer = factory(Customer::class)->create([
             'name' => 'Mock Ford'
         ]);
-        $classicPriceRule = \App\Services\PricingRule\Rules\Factories\BuyXFreeYRuleFactory::fromArray([
+        $classicPriceRule = \App\Services\PricingRule\Rules\Factories\XForThePriceOfYRuleFactory::fromArray([
             'adTypeId' => AdType::TYPE_CLASSIC,
-            'thresholdQty' => 4
+            'thresholdQty' => 5,
+            'calculatedQty' => 4,
         ]);
         $standoutPriceRule = \App\Services\PricingRule\Rules\Factories\FixedAdTypePriceRuleFactory::fromArray([
             'adTypeId' => AdType::TYPE_STANDOUT,

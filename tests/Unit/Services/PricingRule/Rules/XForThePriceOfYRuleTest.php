@@ -5,13 +5,13 @@ namespace Tests\Unit\Services\PricingRule\Rules;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
-use App\Services\PricingRule\Rules\BuyXFreeYRule;
+use App\Services\PricingRule\Rules\XForThePriceOfYRule;
 use App\Models\AdType;
 use App\Models\CheckoutItem;
 
 use Tests\Unit\Services\PricingRule\Rules\TestTraits\GeneratesCheckoutItemsOfAdType;
 
-class BuyXFreeYRuleTest extends TestCase
+class XForThePriceOfYRuleTest extends TestCase
 {
     use GeneratesCheckoutItemsOfAdType, DatabaseTransactions;
 
@@ -24,8 +24,10 @@ class BuyXFreeYRuleTest extends TestCase
     {
         $adType = AdType::inRandomOrder()->first();
 
-        $rule = new BuyXFreeYRule;
-        $rule->setThresholdQty(2);
+        //3 for the price of 2
+        $rule = new XForThePriceOfYRule;
+        $rule->setThresholdQty(3);
+        $rule->setCalculatedQty(2);
         $rule->setAdType($adType);
 
         //3 eligible items in checkout, should return 1
@@ -44,8 +46,10 @@ class BuyXFreeYRuleTest extends TestCase
         $checkoutItems = $this->generateCheckoutItems($adType, 6, $qtyOfDiffTypes = rand(6, 10));
         $this->assertEquals(2, $rule->totalBonusQty($checkoutItems->all()));
 
-        $rule = new BuyXFreeYRule;
-        $rule->setThresholdQty(4);
+        //5 for the price of 4
+        $rule = new XForThePriceOfYRule;
+        $rule->setThresholdQty(5);
+        $rule->setCalculatedQty(4);
         $rule->setAdType($adType);
 
         //3 eligible items in checkout, should return 0

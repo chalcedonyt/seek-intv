@@ -7,30 +7,44 @@ use App\Models\CheckoutItem;
 use App\Services\PricingRule\PricingRuleInterface;
 use App\Services\PricingRule\Rules\Abstracts\AdTypePricingRuleAbstract;
 
-class BuyXFreeYRule extends AdTypePricingRuleAbstract implements PricingRuleInterface
+class XForThePriceOfYRule extends AdTypePricingRuleAbstract implements PricingRuleInterface
 {
     /**
      * @var string
      */
-    protected $alias = 'buy_x_free_y';
+    protected $alias = 'x_for_the_price_of_y';
     /**
      * @var string
      */
-    protected $displayName = 'Buy X free Y';
+    protected $displayName = 'X for the price of Y';
+
     /**
-     * The number of items needed in a checkout to trigger 1 free item
-     *
      * @var int
      */
     protected $thresholdQty;
+    /**
+     * @var int
+     */
+    protected $calculatedQty;
 
     /**
+     * The qty that triggers the price
      * @param integer $thresholdQty
      * @return void
      */
     public function setThresholdQty(int $thresholdQty)
     {
         $this->thresholdQty = $thresholdQty;
+    }
+
+    /**
+     * The equivalent qty
+     * @param integer $calculatedQty
+     * @return void
+     */
+    public function setCalculatedQty(int $calculatedQty)
+    {
+        $this->calculatedQty = $calculatedQty;
     }
 
     /**
@@ -41,7 +55,8 @@ class BuyXFreeYRule extends AdTypePricingRuleAbstract implements PricingRuleInte
     {
         $parent = parent::toArray();
         return array_merge($parent, [
-            'thresholdQty' => $this->thresholdQty
+            'thresholdQty' => $this->thresholdQty,
+            'calculatedQty' => $this->calculatedQty,
         ]);
     }
 
@@ -54,7 +69,8 @@ class BuyXFreeYRule extends AdTypePricingRuleAbstract implements PricingRuleInte
     {
         return Validator::make($data, [
             'adTypeId' => 'required|exists:ad_type,id',
-            'thresholdQty' => 'required|integer|min:1'
+            'thresholdQty' => 'required|integer|min:1',
+            'calculatedQty' => 'required|integer|min:1'
         ]);
     }
 
@@ -64,6 +80,7 @@ class BuyXFreeYRule extends AdTypePricingRuleAbstract implements PricingRuleInte
      */
     public function apply(array $checkoutItems): array
     {
+        //number of items to effectively exclude from the calculation
         $freeItemCount = $this->totalBonusQty($checkoutItems);
 
         return collect($checkoutItems)->map(function (CheckoutItem $checkoutItem) use (&$freeItemCount): CheckoutItem {
@@ -81,30 +98,24 @@ class BuyXFreeYRule extends AdTypePricingRuleAbstract implements PricingRuleInte
      */
     public function shouldApply(array $checkoutItems): bool
     {
-        return $this->thresholdQty < count($this->itemsOfAdType($checkoutItems));
+        return $this->thresholdQty <= count($this->itemsOfAdType($checkoutItems));
     }
 
     /**
      * Return the number of bonus items applicable - bounded by the qty in checkout.
-     * E.g. For a "Buy 3 free 1":
-     * 7 items in cart would resolve to 1 free item.
-     * 8 items in cart would resolve to 2 free items.
+     * E.g. For a "4 for the price of 3":
+     * 7 items in cart would resolve to 1 free item (3 + 1 free item + 3 items)
+     * 8 items in cart would resolve to 2 free items (3 + 1 free item + 3 items + 1 free item)
      *
      * @param array $checkoutItems
      * @return integer
      */
     public function totalBonusQty(array $checkoutItems): int
     {
-        $eligibleItems = $this->itemsOfAdType($checkoutItems);
-        $bonusItemCount = 0;
-        $thresholdForBonus = $this->thresholdQty;
-        for ($i = 1; $i < count($eligibleItems)+1; $i++) {
-            if ($i > $thresholdForBonus) {
-                $bonusItemCount++;
-                $thresholdForBonus += $this->thresholdQty+1;
-            }
-        }
-        return $bonusItemCount;
+        $eligibleItemQty = count($this->itemsOfAdType($checkoutItems));
+        if ($eligibleItemQty < $this->thresholdQty)
+            return 0;
+        return $eligibleItemQty - (ceil($eligibleItemQty/$this->thresholdQty*$this->calculatedQty));
     }
 
     /**
@@ -113,10 +124,10 @@ class BuyXFreeYRule extends AdTypePricingRuleAbstract implements PricingRuleInte
      */
     public function __toString(): string
     {
-        return sprintf('%s: %d for %d',
+        return sprintf('%s: %d for the price of %d',
             $this->adType->display_name,
-            $this->thresholdQty+1,
-            $this->thresholdQty
+            $this->thresholdQty,
+            $this->calculatedQty
         );
     }
 }

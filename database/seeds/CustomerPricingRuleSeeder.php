@@ -33,9 +33,10 @@ class CustomerPricingRuleSeeder extends Seeder
         $unilever = Customer::create([
             'name' => 'Unilever'
         ]);
-        $rule = $pricingRuleFactories['buy_x_free_y']::fromArray([
+        $rule = $pricingRuleFactories['x_for_the_price_of_y']::fromArray([
             'adTypeId' => AdType::TYPE_CLASSIC,
-            'thresholdQty' => 2
+            'thresholdQty' => 3,
+            'calculatedQty' => 2
         ]);
 
         CustomerPricingRule::create([
@@ -88,9 +89,10 @@ class CustomerPricingRuleSeeder extends Seeder
             'name' => 'Ford'
         ]);
 
-        $classicRule = $pricingRuleFactories['buy_x_free_y']::fromArray([
+        $classicRule = $pricingRuleFactories['x_for_the_price_of_y']::fromArray([
             'adTypeId' => AdType::TYPE_CLASSIC,
-            'thresholdQty' => 4
+            'thresholdQty' => 5,
+            'calculatedQty' => 4,
         ]);
         CustomerPricingRule::create([
             'customer_id' => $ford->getKey(),

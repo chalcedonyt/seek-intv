@@ -7,10 +7,10 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 use App\Models\AdType;
-use App\Services\PricingRule\Rules\BuyXFreeYRule;
-use App\Services\PricingRule\Rules\Factories\BuyXFreeYRuleFactory;
+use App\Services\PricingRule\Rules\XForThePriceOfYRule;
+use App\Services\PricingRule\Rules\Factories\XForThePriceOfYRuleFactory;
 
-class BuyXFreeYRuleFactoryTest extends TestCase
+class XForThePriceOfYRuleFactoryTest extends TestCase
 {
     use DatabaseTransactions;
     /**
@@ -22,13 +22,14 @@ class BuyXFreeYRuleFactoryTest extends TestCase
     {
         $adType = AdType::inRandomOrder()->first();
 
-        $rule = new BuyXFreeYRule;
+        $rule = new XForThePriceOfYRule;
         $rule->setAdType($adType);
         $rule->setThresholdQty(rand(5, 10));
+        $rule->setCalculatedQty(rand(3, 4));
 
         $data = $rule->toArray();
 
-        $duplicateRule = BuyXFreeYRuleFactory::fromArray($data);
+        $duplicateRule = XForThePriceOfYRuleFactory::fromArray($data);
         $this->assertEquals(array_values($duplicateRule->toArray()), array_values($data));
         $this->assertEquals(array_keys($duplicateRule->toArray()), array_keys($data));
     }
