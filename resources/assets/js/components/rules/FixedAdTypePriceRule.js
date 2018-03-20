@@ -64,9 +64,7 @@ class FixedAdTypePriceRule extends React.Component {
       adTypeId: this.state.selectedAdTypeId,
       fixedPrice: this.state.fixedPrice,
     }
-    // this.props.onSubmit(params)
-    const adType = _.find(this.state.adTypes, {id: this.state.selectedAdTypeId})
-    this.props.onSuggestedDisplayName(`${adType.display_name}: Fixed price of ${params.fixedPrice}`)
+    this.props.onSubmit(params)
   }
 
   handleThresholdQtyChange(e) {
