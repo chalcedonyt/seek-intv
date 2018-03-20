@@ -2,9 +2,6 @@
 
 [![Build Status](https://travis-ci.org/chalcedonyt/seek-intv.svg?branch=master)](https://travis-ci.org/chalcedonyt/seek-intv)
 
-[simulator](https://github.com/chalcedonyt/seek-intv/blob/master/simulator.png?raw=true)
-[rule browser](https://github.com/chalcedonyt/seek-intv/blob/master/rules.png?raw=true)
-
 ## Requirements and installation
 
 * Standard Laravel 5.6 (PHP7.1)
@@ -42,4 +39,5 @@ php artisan serve
 * Trying to key in a fixed price higher than the normal price
 * For "X for the price of Y", keying in a value of Y > X is invalid
 
-
+![simulator](https://github.com/chalcedonyt/seek-intv/blob/master/simulator.png?raw=true)
+![rule browser](https://github.com/chalcedonyt/seek-intv/blob/master/rules.png?raw=true)
