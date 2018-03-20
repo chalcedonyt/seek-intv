@@ -30,9 +30,10 @@ php artisan serve
 
 ## Other notes
 
+* Take advantage of MySQL 5.7 JSON data types, allows combining the benefits of relational with NoSQL to store the pricing rules
 * Quick frontend in React to display pricing simulations ("quick" meaning no tests or prop-types)
 * As we are just testing prices, there is no actual checkout saved at the end, though the prices are simulated.
-* It would have been possible to assign new rules from scratch, but this was not done because of time. However existing rules can be edited as PoC.
+* It would have been possible to assign new rules from scratch, but this was not done because of time (refer to the tests to see how they can easily be created on the backend using Factories). However existing rules can be edited on the frontend as PoC.
 * It would also have been possible to make the React components more reusable, but this was not the focus.
 
 ## Some of the things validated
