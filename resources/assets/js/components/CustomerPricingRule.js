@@ -22,9 +22,9 @@ export default class CustomerPricingRule extends React.Component {
       case 'x_for_the_price_of_y':
         return require('./rules/XForThePriceOfYRule')
       case 'fixed_for_ad_type':
-        return require('./rules/XForThePriceOfYRule')
+        return require('./rules/FixedAdTypePriceRule')
       default:
-        return require('./rules/XForThePriceOfYRule')
+        return require('./rules/FixedAdTypePriceWithMinQtyRule')
     }
   }
 
@@ -55,6 +55,7 @@ export default class CustomerPricingRule extends React.Component {
       <div>
         <Breadcrumb>
           <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
+          <Breadcrumb.Item href="/customer-pricing-rules">Customer Pricing Rules</Breadcrumb.Item>
           <Breadcrumb.Item active>Rule: {this.state.rule && this.state.rule.display_name}</Breadcrumb.Item>
         </Breadcrumb>
         {this.state.rule &&

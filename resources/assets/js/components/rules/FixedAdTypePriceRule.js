@@ -7,26 +7,23 @@ const FormGroup = require('react-bootstrap/lib/FormGroup')
 const Grid = require('react-bootstrap/lib/Grid')
 const Row = require('react-bootstrap/lib/Row')
 
-class XForThePriceOfYRule extends React.Component {
+class FixedAdTypePriceRule extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
       adTypes: null,
       selectedAdTypeId: '',
-      thresholdQty: 0,
-      calculatedQty: 0
+      fixedPrice: 0,
     }
 
     this.handleAdTypeChange = this.handleAdTypeChange.bind(this)
-    this.handleCalculatedQtyChange = this.handleCalculatedQtyChange.bind(this)
-    this.handleThresholdQtyChange = this.handleThresholdQtyChange.bind(this)
+    this.handleFixedPriceChange = this.handleFixedPriceChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
   }
 
   componentDidMount() {
     this.setState({
-      thresholdQty: this.props.settings.thresholdQty,
-      calculatedQty: this.props.settings.calculatedQty,
+      fixedPrice: this.props.settings.fixedPrice,
       selectedAdTypeId: this.props.settings.adTypeId
     }, () => {
       api.getAdTypes()
@@ -39,9 +36,7 @@ class XForThePriceOfYRule extends React.Component {
   }
 
   getValidationState() {
-    return this.state.thresholdQty <= this.state.calculatedQty || this.state.thresholdQty < 1
-    ? 'warning'
-    : null
+    return isNaN(this.state.fixedPrice) || this.state.fixedPrice <= 0 ? 'warning': null
   }
 
   handleAdTypeChange(e) {
@@ -50,9 +45,9 @@ class XForThePriceOfYRule extends React.Component {
     })
   }
 
-  handleCalculatedQtyChange(e) {
+  handleFixedPriceChange(e) {
     this.setState({
-      calculatedQty: e.target.value
+      fixedPrice: e.target.value
     })
   }
 
@@ -61,8 +56,7 @@ class XForThePriceOfYRule extends React.Component {
       return
     const params = {
       adTypeId: this.state.selectedAdTypeId,
-      thresholdQty: this.state.thresholdQty,
-      calculatedQty: this.state.calculatedQty,
+      fixedPrice: this.state.fixedPrice,
     }
     this.props.onSubmit(params)
   }
@@ -93,18 +87,12 @@ class XForThePriceOfYRule extends React.Component {
           </Row>
           <Row>
             <Col md={3} xs={3}>
-              <strong>Settings:</strong>
+              <strong>Fix price to ($):</strong>
             </Col>
             <Col md={8} xs={8}>
               <Row>
-                <Col md={2} xs={2}>
-                  <FormControl type="text" onChange={this.handleThresholdQtyChange} value={this.state.thresholdQty}></FormControl>
-                </Col>
-                <Col md={2} xs={2}>
-                for the price of
-                </Col>
-                <Col md={2} xs={2}>
-                  <FormControl type="text" onChange={this.handleCalculatedQtyChange} value={this.state.calculatedQty}></FormControl>
+                <Col md={3} xs={3}>
+                  <FormControl type="text" onChange={this.handleFixedPriceChange} value={this.state.fixedPrice}></FormControl>
                 </Col>
               </Row>
             </Col>
@@ -120,4 +108,4 @@ class XForThePriceOfYRule extends React.Component {
   }
 }
 
-module.exports = XForThePriceOfYRule
+module.exports = FixedAdTypePriceRule
