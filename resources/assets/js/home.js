@@ -16,14 +16,20 @@ require('./bootstrap');
 const React = require('react')
 const ReactDOM = require('react-dom')
 import {Route, BrowserRouter, Switch} from 'react-router-dom'
-import {Button} from 'react-bootstrap'
+import {Button, Jumbotron} from 'react-bootstrap'
 
 ReactDOM.render(
   <BrowserRouter>
-      <div>
-        <h1>Customer Pricing Rules</h1>
-        <Button href="/customer-pricing-rules">Pricing Rules</Button>
-        <Button href="/checkout-simulator">Checkout Simulator</Button>
-      </div>
+      <Jumbotron>
+        <h1>Customer Pricing Rules Simulator</h1>
+        <p>
+          Click on <em>Pricing Rules</em> to review and customize pricing rules.
+        </p>
+        <p>
+          Click on <em>Checkout Simulator</em> to test the rules and check out items.
+        </p>
+        <Button href="/customer-pricing-rules" bsStyle='info'>Pricing Rules</Button>
+        <Button href="/checkout-simulator" bsStyle='success'>Checkout Simulator</Button>
+      </Jumbotron>
     </BrowserRouter>
 , document.getElementById('home'));

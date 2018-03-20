@@ -11,7 +11,8 @@ export default class CustomerPricingRules extends React.Component {
       customers: null,
       selectedCustomer: null,
       simulatedPrice: null,
-      appliedPricingRules: []
+      appliedPricingRules: [],
+      isUpdating: false
     }
     this.handleCustomerSelect = this.handleCustomerSelect.bind(this)
     this.handleItemCheckout = this.handleItemCheckout.bind(this)
@@ -64,11 +65,16 @@ export default class CustomerPricingRules extends React.Component {
     const items = this.state.checkoutItems.map((adType) => {
       return {ad_type_id: adType.id}
     })
-    api.simulateCheckoutPrices(this.state.selectedCustomer.id, items)
-    .then(({price: simulatedPrice, applied_pricing_rules: appliedPricingRules}) => {
-      this.setState({
-        simulatedPrice,
-        appliedPricingRules
+    this.setState({
+      isUpdating: true
+    }, () => {
+      api.simulateCheckoutPrices(this.state.selectedCustomer.id, items)
+      .then(({price: simulatedPrice, applied_pricing_rules: appliedPricingRules}) => {
+        this.setState({
+          simulatedPrice,
+          appliedPricingRules,
+          isUpdating: false
+        })
       })
     })
   }
@@ -84,7 +90,7 @@ export default class CustomerPricingRules extends React.Component {
 
         <Row>
           <Col md={6}>
-            <Panel>
+            <Panel bsStyle='info'>
               <Panel.Heading>
                 Choose a customer to simulate
               </Panel.Heading>
@@ -96,7 +102,8 @@ export default class CustomerPricingRules extends React.Component {
                         <Col md={5} xs={5}>
                           <h4 className='list-group-item-heading'>{customer.name}</h4>
                         </Col>
-                        <Col mdOffset={10} xsOffset={9}>
+                        <Col md={4} xs={4}></Col>
+                        <Col md={2} xs={2}>
                           <Button bsStyle='info' onClick={(e) => this.handleCustomerSelect(customer)}>
                             Simulate <Glyphicon glyph='chevron-right' />
                           </Button>
@@ -121,7 +128,7 @@ export default class CustomerPricingRules extends React.Component {
           </Col>
           <Col md={6}>
           {this.state.selectedCustomer && (
-            <Panel>
+            <Panel bsStyle='success'>
               <Panel.Heading>
                 Simulate a checkout for <strong>{this.state.selectedCustomer.name}</strong>
               </Panel.Heading>
@@ -141,7 +148,7 @@ export default class CustomerPricingRules extends React.Component {
                 <Panel>
                   <Panel.Heading>
                     {this.state.checkoutItems.length == 0
-                    ? 'Select an ad SKU to checkout above'
+                    ? 'Select ad SKUs to checkout above'
                     :
                       <p>
                         {`${this.state.checkoutItems.length} ad(s) in checkout`}
@@ -160,7 +167,9 @@ export default class CustomerPricingRules extends React.Component {
                   </Panel.Body>
                   {this.state.simulatedPrice && (
                     <Panel.Footer>
-                      <Alert bsStyle="success">
+                      {this.state.isUpdating
+                      ? <Alert bsStyle="success">'Updating...'</Alert>
+                      : <Alert bsStyle="success">
                         Total : <strong>${this.state.simulatedPrice}</strong>
                         {this.state.appliedPricingRules.length > 0 && (
                           <Alert bsStyle="info">
@@ -172,6 +181,7 @@ export default class CustomerPricingRules extends React.Component {
                           </Alert>
                         )}
                       </Alert>
+                      }
                     </Panel.Footer>
                   )}
                 </Panel>
